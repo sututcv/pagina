@@ -1,14 +1,29 @@
 site_name: Sindicato Único de Trabajadores de la Universidad Tecnológica del Centro de Veracruz
 site_url: https://sututcv.org.mx
-repo_url: https://github.com/sututcv/pagina
-edit_uri: ""  # Déjalo vacío para que no salga el botón de "editar en github" al público
+#repo_url: https://github.com/sututcv/pagina
+#edit_uri: ""  # Déjalo vacío para que no salga el botón de "editar en github" al público
 
 theme:
   name: material
+  logo: assets/logo.png      # Ruta a tu logo
+  favicon: assets/favicon.png # Icono de la pestaña
   language: es
   palette:
-    primary: cyan # Cambia al color oficial del sindicato
-    accent: blue
+    # Modo Claro (Default)
+    - scheme: default
+      primary: blue-grey           # Color de la barra superior
+      accent: olive            # Color de enlaces y botones
+      toggle:
+        icon: material/brightness-7 
+        name: Cambiar a modo oscuro
+
+    # Modo Oscuro (Opcional, se ve muy pro)
+    - scheme: slate
+      primary: blue-grey
+      accent: olive
+      toggle:
+        icon: material/brightness-4
+        name: Cambiar a modo claro
   features:
     - navigation.tabs # Menú superior tipo pestañas (muy elegante)
     - navigation.sections
@@ -34,3 +49,11 @@ markdown_extensions:
   - pymdownx.tabbed:
       alternate_style: true
   - admonition
+
+extra_css:
+  - stylesheets/extra.css
+
+extra:
+  generator: false  # <--- Esto oculta la frase "Made with Material for MkDocs"
+copyright: >
+  &copy; 2026 Sindicato Único de Trabajadores de la Universidad Tecnológica del Centro de Veracruz - Todos los derechos reservados.
