@@ -1,13 +1,13 @@
 site_name: Sindicato Único de Trabajadores de la Universidad Tecnológica del Centro de Veracruz
 site_url: https://sututcv.org.mx
-repo_url: https://github.com/sututcv/tu-repo
+repo_url: https://github.com/sututcv/pagina
 edit_uri: ""  # Déjalo vacío para que no salga el botón de "editar en github" al público
 
 theme:
   name: material
   language: es
   palette:
-    primary: indigo # Cambia al color oficial del sindicato
+    primary: cyan # Cambia al color oficial del sindicato
     accent: blue
   features:
     - navigation.tabs # Menú superior tipo pestañas (muy elegante)
