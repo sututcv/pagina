@@ -1,0 +1,25 @@
+---
+import HighlightCard from '../cards/HighlightCard.astro';
+import SectionHeading from '../common/SectionHeading.astro';
+import type { HighlightItem } from '../../types/content';
+
+interface Props {
+  title: string;
+  description?: string;
+  eyebrow?: string;
+  items: HighlightItem[];
+  columns?: 2 | 3;
+  tint?: boolean;
+}
+
+const { title, description, eyebrow, items, columns = 3, tint = false } = Astro.props;
+---
+
+<section class:list={['section', tint && 'section-tint']}>
+  <div class="container stack-lg">
+    <SectionHeading title={title} description={description} eyebrow={eyebrow} />
+    <div class:list={['grid', columns === 2 ? 'grid-2' : 'grid-3']}>
+      {items.map((item) => <HighlightCard {...item} />)}
+    </div>
+  </div>
+</section>

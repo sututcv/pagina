@@ -1,0 +1,240 @@
+---
+import type { GalleryPhoto } from '../../types/content';
+
+interface Props {
+  photos: GalleryPhoto[];
+  albumTitle: string;
+}
+
+const { photos, albumTitle } = Astro.props;
+const viewerId = `gallery-viewer-${albumTitle.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
+---
+
+<div class="gallery-viewer" data-gallery-viewer>
+  <div class="photo-grid">
+    {
+      photos.map((photo, index) => (
+        <figure class="photo-card surface-card">
+          <button
+            type="button"
+            class="photo-button"
+            data-photo-open
+            data-photo-index={index}
+            aria-label={`Ampliar fotografía ${index + 1} de ${photos.length}: ${photo.alt}`}
+          >
+            <img
+              src={photo.src}
+              alt={photo.alt}
+              width={photo.width}
+              height={photo.height}
+              loading="lazy"
+            />
+          </button>
+          <figcaption>{photo.caption}</figcaption>
+        </figure>
+      ))
+    }
+  </div>
+
+  <dialog id={viewerId} class="photo-dialog" data-photo-dialog aria-labelledby={`${viewerId}-title`}>
+    <div class="dialog-shell">
+      <header>
+        <h2 id={`${viewerId}-title`}>{albumTitle}</h2>
+        <button type="button" class="dialog-close" data-photo-close>
+          <span aria-hidden="true">×</span>
+          <span class="sr-only">Cerrar visor</span>
+        </button>
+      </header>
+      <figure>
+        <img data-dialog-image src="" alt="" width="1200" height="800" />
+        <figcaption data-dialog-caption></figcaption>
+      </figure>
+      <footer>
+        <button type="button" class="button button-neutral" data-photo-previous>
+          <span aria-hidden="true">←</span> Anterior
+        </button>
+        <p data-photo-position aria-live="polite"></p>
+        <button type="button" class="button button-neutral" data-photo-next>
+          Siguiente <span aria-hidden="true">→</span>
+        </button>
+      </footer>
+    </div>
+  </dialog>
+
+  <script
+    type="application/json"
+    is:inline
+    data-gallery-data
+    set:html={JSON.stringify(photos)}
+  ></script>
+</div>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-gallery-viewer]').forEach((viewer) => {
+    const dialog = viewer.querySelector<HTMLDialogElement>('[data-photo-dialog]');
+    const image = dialog?.querySelector<HTMLImageElement>('[data-dialog-image]');
+    const caption = dialog?.querySelector<HTMLElement>('[data-dialog-caption]');
+    const position = dialog?.querySelector<HTMLElement>('[data-photo-position]');
+    const previous = dialog?.querySelector<HTMLButtonElement>('[data-photo-previous]');
+    const next = dialog?.querySelector<HTMLButtonElement>('[data-photo-next]');
+    const close = dialog?.querySelector<HTMLButtonElement>('[data-photo-close]');
+    const data = viewer.querySelector<HTMLScriptElement>('[data-gallery-data]');
+    const photos = data ? JSON.parse(data.textContent ?? '[]') : [];
+    let currentIndex = 0;
+    let opener: HTMLElement | null = null;
+
+    const render = () => {
+      const photo = photos[currentIndex];
+      if (!photo || !image || !caption || !position) return;
+      image.src = photo.src;
+      image.alt = photo.alt;
+      image.width = photo.width;
+      image.height = photo.height;
+      caption.textContent = photo.caption;
+      position.textContent = `Fotografía ${currentIndex + 1} de ${photos.length}`;
+      if (previous) previous.disabled = photos.length <= 1;
+      if (next) next.disabled = photos.length <= 1;
+    };
+
+    viewer.querySelectorAll<HTMLButtonElement>('[data-photo-open]').forEach((button) => {
+      button.addEventListener('click', () => {
+        currentIndex = Number(button.dataset.photoIndex ?? 0);
+        opener = button;
+        render();
+        dialog?.showModal();
+        close?.focus();
+      });
+    });
+
+    previous?.addEventListener('click', () => {
+      currentIndex = (currentIndex - 1 + photos.length) % photos.length;
+      render();
+    });
+
+    next?.addEventListener('click', () => {
+      currentIndex = (currentIndex + 1) % photos.length;
+      render();
+    });
+
+    close?.addEventListener('click', () => dialog?.close());
+    dialog?.addEventListener('close', () => opener?.focus());
+    dialog?.addEventListener('click', (event) => {
+      if (event.target === dialog) dialog.close();
+    });
+  });
+</script>
+
+<style>
+  .photo-grid {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .photo-card {
+    overflow: hidden;
+  }
+
+  .photo-button {
+    display: block;
+    width: 100%;
+    padding: 0;
+    border: 0;
+    background: #e9eff3;
+    cursor: zoom-in;
+  }
+
+  .photo-button img {
+    width: 100%;
+    height: 22rem;
+    object-fit: cover;
+  }
+
+  .photo-card figcaption {
+    padding: 0.8rem 1rem;
+    color: var(--color-text-muted);
+  }
+
+  .photo-dialog {
+    width: min(72rem, calc(100vw - 1rem));
+    max-width: none;
+    max-height: calc(100vh - 1rem);
+    padding: 0;
+    border: 0;
+    border-radius: var(--radius-md);
+    background: var(--color-navy-950);
+    color: white;
+    box-shadow: var(--shadow-large);
+  }
+
+  .photo-dialog::backdrop {
+    background: rgba(1, 10, 22, 0.88);
+  }
+
+  .dialog-shell {
+    display: grid;
+    max-height: calc(100vh - 1rem);
+  }
+
+  .photo-dialog header,
+  .photo-dialog footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.8rem 1rem;
+  }
+
+  .photo-dialog h2 {
+    color: white;
+    font-size: 1.05rem;
+  }
+
+  .dialog-close {
+    display: grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    border-radius: 50%;
+    background: transparent;
+    color: white;
+    font-size: 1.6rem;
+    cursor: pointer;
+  }
+
+  .photo-dialog figure {
+    display: grid;
+    min-height: 0;
+    margin: 0;
+    overflow: auto;
+  }
+
+  .photo-dialog figure img {
+    width: 100%;
+    max-height: calc(100vh - 12rem);
+    object-fit: contain;
+  }
+
+  .photo-dialog figcaption {
+    padding: 0.65rem 1rem;
+    color: rgba(255, 255, 255, 0.78);
+    text-align: center;
+  }
+
+  .photo-dialog footer {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .photo-dialog footer p {
+    margin: 0;
+    min-width: 9rem;
+    text-align: center;
+  }
+
+  @media (min-width: 44rem) {
+    .photo-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+</style>

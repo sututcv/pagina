@@ -1,0 +1,98 @@
+---
+import GalleryViewer from '../../components/gallery/GalleryViewer.astro';
+import PageHero from '../../components/common/PageHero.astro';
+import Layout from '../../layouts/Layout.astro';
+import { getGalleryAlbums } from '../../lib/content/site';
+import type { GalleryAlbum } from '../../types/content';
+
+export function getStaticPaths() {
+  return getGalleryAlbums().map((album) => ({
+    params: { slug: album.slug },
+    props: { album },
+  }));
+}
+
+interface Props {
+  album: GalleryAlbum;
+}
+
+const { album } = Astro.props;
+---
+
+<Layout
+  title={album.title}
+  description={album.description}
+  image={album.cover.src}
+  breadcrumbs={[
+    { label: 'Inicio', href: '/' },
+    { label: 'Galería', href: '/galeria' },
+    { label: album.title },
+  ]}
+>
+  <PageHero
+    eyebrow={album.dateLabel}
+    title={album.title}
+    description={album.description}
+  />
+
+  <section class="section">
+    <div class="container stack-lg">
+      <div class="album-meta surface-card">
+        <div>
+          <strong>Fecha</strong>
+          <time datetime={album.date}>{album.dateLabel}</time>
+        </div>
+        {album.place && <div><strong>Lugar</strong><span>{album.place}</span></div>}
+        <div>
+          <strong>Fotografías publicadas</strong>
+          <span>{album.photos.length}</span>
+        </div>
+      </div>
+
+      <GalleryViewer photos={album.photos} albumTitle={album.title} />
+
+      <div class="privacy-note">
+        <strong>Revisión de privacidad</strong>
+        <p>
+          Se omitieron fotografías con documentos, listas o gafetes visibles. Usa el botón de cada imagen para abrir el visor accesible.
+        </p>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .album-meta {
+    display: grid;
+    gap: 1rem;
+    padding: 1rem 1.2rem;
+  }
+
+  .album-meta div {
+    display: grid;
+    gap: 0.2rem;
+  }
+
+  .album-meta strong {
+    color: var(--color-navy-900);
+    font-family: var(--font-heading);
+    font-size: 0.86rem;
+  }
+
+  .privacy-note {
+    padding: 1rem 1.15rem;
+    border-radius: var(--radius-sm);
+    background: var(--color-teal-50);
+    color: var(--color-teal-800);
+  }
+
+  .privacy-note p {
+    margin: 0.25rem 0 0;
+  }
+
+  @media (min-width: 44rem) {
+    .album-meta {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+</style>

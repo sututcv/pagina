@@ -1,0 +1,69 @@
+---
+interface Props {
+  title: string;
+  description: string;
+  eyebrow?: string;
+  marker?: string;
+  markerTitle?: string;
+}
+
+const { title, description, eyebrow, marker, markerTitle = 'Información pendiente' } = Astro.props;
+---
+
+<section class="page-hero">
+  <div class="container page-hero-inner">
+    <div>
+      {eyebrow && <p class="eyebrow">{eyebrow}</p>}
+      <h1>{title}</h1>
+      <p>{description}</p>
+    </div>
+    {marker && <aside class="pending-panel"><strong>{markerTitle}</strong>{marker}</aside>}
+  </div>
+</section>
+
+<style>
+  .page-hero {
+    overflow: hidden;
+    padding-block: 2.5rem;
+    background:
+      radial-gradient(circle at 90% 10%, rgba(0, 139, 150, 0.2), transparent 17rem),
+      linear-gradient(135deg, var(--color-navy-950), var(--color-navy-800));
+    color: white;
+  }
+
+  .page-hero-inner {
+    display: grid;
+    gap: 1.25rem;
+    align-items: end;
+  }
+
+  .page-hero .eyebrow {
+    color: #99e0e5;
+  }
+
+  .page-hero h1 {
+    color: white;
+    font-size: clamp(2.1rem, 6vw, 3.7rem);
+  }
+
+  .page-hero p:not(.eyebrow) {
+    max-width: 68ch;
+    margin: 0.85rem 0 0;
+    color: rgba(255, 255, 255, 0.82);
+    font-size: 1.08rem;
+  }
+
+  .page-hero .pending-panel {
+    color: #653d00;
+  }
+
+  @media (min-width: 56rem) {
+    .page-hero {
+      padding-block: 3.5rem;
+    }
+
+    .page-hero-inner:has(.pending-panel) {
+      grid-template-columns: minmax(0, 1.5fr) minmax(18rem, 0.5fr);
+    }
+  }
+</style>

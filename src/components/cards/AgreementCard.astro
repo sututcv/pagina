@@ -1,0 +1,120 @@
+---
+import type { Agreement } from '../../types/content';
+
+interface Props {
+  agreement: Agreement;
+}
+
+const { agreement } = Astro.props;
+const statusLabels = {
+  vigente: 'Vigente',
+  'proximo-a-vencer': 'Próximo a vencer',
+  concluido: 'Concluido',
+  'por-confirmar': 'Vigencia por confirmar',
+};
+const searchableText = [
+  agreement.organization,
+  agreement.title,
+  agreement.category,
+  agreement.summary,
+  agreement.benefitSummary,
+  ...agreement.benefits,
+].join(' ');
+---
+
+<article
+  class="agreement-card surface-card"
+  data-agreement-card
+  data-category={agreement.category}
+  data-status={agreement.status}
+  data-search={searchableText}
+>
+  <div class="agreement-image">
+    <img
+      src={agreement.image.src}
+      alt={agreement.image.alt}
+      width={agreement.image.width}
+      height={agreement.image.height}
+      loading="lazy"
+    />
+  </div>
+  <div class="agreement-body">
+    <div class="agreement-meta">
+      <span class="chip">{agreement.category}</span>
+      <span class:list={['status-badge', `status-${agreement.status}`]}>
+        {statusLabels[agreement.status]}
+      </span>
+    </div>
+    <div>
+      <p class="eyebrow">{agreement.organization}</p>
+      <h3>{agreement.title}</h3>
+      <p>{agreement.summary}</p>
+    </div>
+    <strong class="benefit-summary">{agreement.benefitSummary}</strong>
+    <a class="text-link" href={`/convenios-y-beneficios/${agreement.id}`}>
+      Consultar convenio <span aria-hidden="true">→</span>
+    </a>
+  </div>
+</article>
+
+<style>
+  .agreement-card {
+    display: grid;
+    overflow: hidden;
+  }
+
+  .agreement-image {
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    background: var(--color-blue-50);
+  }
+
+  .agreement-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+  }
+
+  .agreement-body {
+    display: grid;
+    gap: 1rem;
+    padding: 1.25rem;
+  }
+
+  .agreement-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .agreement-card .chip {
+    background: var(--color-teal-50);
+    color: var(--color-teal-800);
+  }
+
+  .agreement-card h3 {
+    margin-bottom: 0.5rem;
+    font-size: 1.3rem;
+  }
+
+  .agreement-card p:not(.eyebrow) {
+    margin: 0;
+    color: var(--color-text-muted);
+  }
+
+  .benefit-summary {
+    color: var(--color-navy-900);
+  }
+
+  @media (min-width: 48rem) {
+    .agreement-card {
+      grid-template-columns: minmax(14rem, 0.7fr) minmax(0, 1.3fr);
+    }
+
+    .agreement-image {
+      aspect-ratio: auto;
+      min-height: 22rem;
+    }
+  }
+</style>

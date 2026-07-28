@@ -1,0 +1,208 @@
+---
+import AgreementCard from '../components/cards/AgreementCard.astro';
+import AlbumCard from '../components/cards/AlbumCard.astro';
+import EventCard from '../components/cards/EventCard.astro';
+import InfoCard from '../components/cards/InfoCard.astro';
+import EmptyState from '../components/common/EmptyState.astro';
+import SectionHeading from '../components/common/SectionHeading.astro';
+import HomeHero from '../components/home/HomeHero.astro';
+import HomeSection from '../components/home/HomeSection.astro';
+import Layout from '../layouts/Layout.astro';
+import {
+  getAgreements,
+  getGalleryAlbums,
+  getHomeContent,
+  getNewsItems,
+  getSiteConfig,
+  getUpcomingEvents,
+} from '../lib/content/site';
+
+const site = getSiteConfig();
+const home = getHomeContent();
+const agreements = getAgreements();
+const news = getNewsItems();
+const upcomingEvents = getUpcomingEvents();
+const recentAlbums = getGalleryAlbums().slice(0, 3);
+---
+
+<Layout
+  title="Inicio"
+  description="Sitio oficial del SUTUTCV: información institucional, Comité Ejecutivo y de Honor y Justifica, convenios, eventos y galería."
+  image={home.hero.image.src}
+>
+  <HomeHero home={home} />
+
+  <HomeSection
+    eyebrow="Información destacada"
+    title="Avisos importantes"
+    description="Accesos prioritarios a información institucional y beneficios disponibles."
+    items={home.alerts}
+  />
+
+  <section class="section section-white">
+    <div class="container welcome-grid">
+      <div class="content-prose">
+        <p class="eyebrow">Nuestra comunidad</p>
+        <h2 class="section-title">{home.welcome.title}</h2>
+        {home.welcome.paragraphs.map((paragraph) => <p>{paragraph}</p>)}
+        <p class="welcome-closing">{home.welcome.closing}</p>
+      </div>
+      <aside class="welcome-brand surface-card">
+        <img
+          src={site.logo.src}
+          alt={site.logo.alt}
+          width={site.logo.width}
+          height={site.logo.height}
+          loading="lazy"
+        />
+        <strong>{site.shortName}</strong>
+        <span>{site.slogan}</span>
+      </aside>
+    </div>
+  </section>
+
+  <HomeSection
+    eyebrow="Accesos rápidos"
+    title="Explora el portal"
+    description="Consulta la información pública disponible por sección."
+    items={home.quickLinks}
+    tint={true}
+  />
+
+  <section class="section">
+    <div class="container stack-lg">
+      <SectionHeading
+        eyebrow="Beneficios"
+        title="Convenios destacados"
+        description="Información tomada directamente de los materiales proporcionados y sin datos ficticios."
+      />
+      <div class="stack-lg">
+        {agreements.map((agreement) => <AgreementCard agreement={agreement} />)}
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-white">
+    <div class="container split-sections">
+      <div class="stack-lg">
+        <SectionHeading
+          eyebrow="Comunicación"
+          title="Noticias recientes"
+          description="Comunicados oficiales autorizados para publicación."
+        />
+        {
+          news.length > 0 ? (
+            <div class="grid grid-2">
+              {news.slice(0, 2).map((item) => (
+                <InfoCard
+                  title={item.title}
+                  description={item.summary}
+                  meta={`${item.category} · ${item.dateLabel}`}
+                  href={`/noticias/${item.slug}`}
+                />
+              ))}
+            </div>
+          ) : (
+            <EmptyState
+              title="Sin noticias publicadas"
+              description="No se proporcionaron noticias oficiales. Esta sección se actualizará cuando exista contenido autorizado."
+            />
+          )
+        }
+      </div>
+
+      <div class="stack-lg">
+        <SectionHeading
+          eyebrow="Agenda"
+          title="Próximos eventos"
+          description="Actividades futuras con información confirmada."
+        />
+        {
+          upcomingEvents.length > 0 ? (
+            <div class="grid grid-2">
+              {upcomingEvents.slice(0, 2).map((event) => <EventCard event={event} />)}
+            </div>
+          ) : (
+            <EmptyState
+              title="Sin eventos próximos"
+              description="No hay convocatorias futuras publicadas. Consulta el archivo de actividades realizadas."
+            />
+          )
+        }
+        <a class="text-link" href="/eventos">Consultar archivo de eventos →</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container stack-lg">
+      <SectionHeading
+        eyebrow="Memoria institucional"
+        title="Galería reciente"
+        description="Selección de fotografías revisadas para evitar la publicación de datos personales o documentos visibles."
+      />
+      <div class="grid grid-3">
+        {recentAlbums.map((album) => <AlbumCard album={album} />)}
+      </div>
+      <div>
+        <a class="button button-neutral" href="/galeria">Ver toda la galería</a>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .welcome-grid {
+    display: grid;
+    gap: 2rem;
+    align-items: center;
+  }
+
+  .welcome-grid .content-prose > p:not(.eyebrow) {
+    color: var(--color-text-muted);
+  }
+
+  .welcome-closing {
+    color: var(--color-navy-900) !important;
+    font-weight: 800;
+  }
+
+  .welcome-brand {
+    display: grid;
+    place-items: center;
+    gap: 0.45rem;
+    padding: 1.5rem;
+    text-align: center;
+  }
+
+  .welcome-brand img {
+    width: min(15rem, 70%);
+  }
+
+  .welcome-brand strong {
+    color: var(--color-navy-900);
+    font-family: var(--font-heading);
+    font-size: 1.4rem;
+    letter-spacing: 0.12em;
+  }
+
+  .welcome-brand span {
+    color: var(--color-teal-800);
+    font-weight: 800;
+  }
+
+  .split-sections {
+    display: grid;
+    gap: 3rem;
+  }
+
+  @media (min-width: 58rem) {
+    .welcome-grid {
+      grid-template-columns: minmax(0, 1.45fr) minmax(18rem, 0.55fr);
+    }
+
+    .split-sections {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+</style>

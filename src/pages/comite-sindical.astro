@@ -1,0 +1,92 @@
+---
+import CommitteeCard from '../components/cards/CommitteeCard.astro';
+import PageHero from '../components/common/PageHero.astro';
+import SectionHeading from '../components/common/SectionHeading.astro';
+import Layout from '../layouts/Layout.astro';
+import { getCommitteeMembers, getHonorJusticeMembers } from '../lib/content/site';
+
+const members = getCommitteeMembers();
+const honorJusticeMembers = getHonorJusticeMembers();
+---
+
+<Layout
+  title="Comité sindical"
+  description="Integración pública del Comité Ejecutivo y del Comité de Honor y Justicia del SUTUTCV."
+  breadcrumbs={[
+    { label: 'Inicio', href: '/' },
+    { label: 'Comité sindical' },
+  ]}
+  image="/media/banner-oficial.webp"
+>
+  <PageHero
+    eyebrow="Representación institucional"
+    title="Comité sindical"
+    description="Conoce a quienes integran el Comité Ejecutivo y el Comité de Honor y Justicia, representantes de nuestra comunidad sindical.
+Su labor se guía por la responsabilidad, la transparencia y la defensa de los derechos de las y los trabajadores."
+    markerTitle="Periodo de Gestión"
+    marker="2026 - 2028"
+  />
+
+  <section class="section section-white">
+    <div class="container committee-intro">
+      <div>
+        <SectionHeading
+          eyebrow="Comité Ejecutivo"
+          title="Representación organizada"
+          description="Conoce a las y los integrantes del Comité Ejecutivo, responsables de representar y coordinar las acciones de nuestro sindicato."
+        />
+      </div>
+      <div class="committee-photo image-frame">
+        <img
+          src="/media/banner-oficial.webp"
+          alt="Integrantes de la comunidad universitaria en una reunión institucional"
+          width="1600"
+          height="900"
+          loading="lazy"
+        />
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container stack-lg">
+      <SectionHeading
+        title="Integrantes"
+        //description={`${members.length} integrantes presentados en orden institucional.`}
+      />
+      <div class="grid grid-2">
+        {members.map((member) => <CommitteeCard member={member} />)}
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-white">
+    <div class="container stack-lg">
+      <SectionHeading
+        title="Comité de Honor y Justifica"
+        description="Conoce a las y los integrantes del Comité de Honor y Justicia, encargado de velar por el cumplimiento de los principios sindicales."
+      />
+      <div class="grid grid-2">
+        {honorJusticeMembers.map((member) => <CommitteeCard member={member} tone="gold" />)}
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .committee-intro {
+    display: grid;
+    gap: 1.5rem;
+    align-items: center;
+  }
+
+  .committee-photo {
+    aspect-ratio: 16 / 9;
+  }
+
+  @media (min-width: 58rem) {
+    .committee-intro {
+      grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+    }
+  }
+</style>

@@ -1,0 +1,133 @@
+---
+import PageHero from '../../components/common/PageHero.astro';
+import Layout from '../../layouts/Layout.astro';
+import { getEvents } from '../../lib/content/site';
+import type { EventItem } from '../../types/content';
+
+export function getStaticPaths() {
+  return getEvents().map((event) => ({
+    params: { slug: event.slug },
+    props: { event },
+  }));
+}
+
+interface Props {
+  event: EventItem;
+}
+
+const { event } = Astro.props;
+---
+
+<Layout
+  title={event.name}
+  description={event.summary}
+  image={event.image.src}
+  breadcrumbs={[
+    { label: 'Inicio', href: '/' },
+    { label: 'Noticias y eventos', href: '/noticias-y-eventos' },
+    { label: 'Eventos', href: '/eventos' },
+    { label: event.name },
+  ]}
+>
+  <PageHero
+    eyebrow={event.category}
+    title={event.name}
+    description={event.summary}
+  />
+
+  <section class="section">
+    <div class="container detail-grid">
+      <article class="surface-card detail-panel content-prose">
+        <div class="event-summary">
+          <div>
+            <strong>Fecha</strong>
+            <time datetime={event.date}>{event.dateLabel}</time>
+          </div>
+          <div>
+            <strong>Estado</strong>
+            <span class:list={['status-badge', `status-${event.status}`]}>
+              {event.status === 'realizado' ? 'Realizado' : 'Próximo'}
+            </span>
+          </div>
+          {event.time && <div><strong>Horario</strong><span>{event.time}</span></div>}
+          {event.place && <div><strong>Lugar</strong><span>{event.place}</span></div>}
+          {event.modality && <div><strong>Modalidad</strong><span>{event.modality}</span></div>}
+        </div>
+
+        <h2>Descripción</h2>
+        {event.description.map((paragraph) => <p>{paragraph}</p>)}
+
+        {
+          event.gallerySlug && (
+            <p>
+              <a class="button button-primary" href={`/galeria/${event.gallerySlug}`}>
+                Ver galería de la actividad
+              </a>
+            </p>
+          )
+        }
+        {
+          (event.registrationUrl || event.callDocument) && (
+            <div class="button-row">
+              {event.registrationUrl && (
+                <a
+                  class="button button-primary"
+                  href={event.registrationUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Ir al registro
+                </a>
+              )}
+              {event.callDocument && (
+                <a class="button button-neutral" href={event.callDocument} download>
+                  Descargar convocatoria
+                </a>
+              )}
+            </div>
+          )
+        }
+      </article>
+
+      <aside class="image-frame event-image">
+        <img
+          src={event.image.src}
+          alt={event.image.alt}
+          width={event.image.width}
+          height={event.image.height}
+          loading="lazy"
+        />
+      </aside>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .event-summary {
+    display: grid;
+    gap: 1rem;
+    padding-bottom: 1.25rem;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .event-summary div {
+    display: grid;
+    gap: 0.25rem;
+  }
+
+  .event-summary strong {
+    color: var(--color-navy-900);
+    font-family: var(--font-heading);
+    font-size: 0.86rem;
+  }
+
+  .event-image {
+    max-height: 35rem;
+  }
+
+  @media (min-width: 40rem) {
+    .event-summary {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+</style>

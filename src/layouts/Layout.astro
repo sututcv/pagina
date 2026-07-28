@@ -1,0 +1,87 @@
+---
+import Footer from '../components/common/Footer.astro';
+import Header from '../components/navigation/Header.astro';
+import Breadcrumbs from '../components/navigation/Breadcrumbs.astro';
+import { getSiteConfig } from '../lib/content/site';
+import { buildSeo } from '../lib/seo/meta';
+import '../styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+  breadcrumbs?: Array<{
+    label: string;
+    href?: string;
+  }>;
+  image?: string;
+  noIndex?: boolean;
+}
+
+const site = getSiteConfig();
+const seo = buildSeo({
+  title: Astro.props.title,
+  description: Astro.props.description,
+});
+const breadcrumbs = Astro.props.breadcrumbs ?? [];
+const currentPath = Astro.url.pathname;
+const configuredOrigin = import.meta.env.PUBLIC_SITE_URL?.trim() || Astro.site?.toString();
+const canonicalUrl = configuredOrigin
+  ? new URL(Astro.url.pathname, configuredOrigin).toString()
+  : undefined;
+const socialImagePath = Astro.props.image ?? site.logo.src;
+const socialImageUrl = configuredOrigin
+  ? new URL(socialImagePath, configuredOrigin).toString()
+  : undefined;
+const organizationData = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: site.organizationName,
+  alternateName: site.shortName,
+  url: configuredOrigin || undefined,
+  logo: configuredOrigin ? new URL(site.logo.src, configuredOrigin).toString() : undefined,
+};
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/png" href={site.logo.src} />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="description" content={seo.description} />
+    <meta name="robots" content={Astro.props.noIndex ? 'noindex, nofollow' : 'index, follow'} />
+    <meta property="og:title" content={seo.title} />
+    <meta property="og:description" content={seo.description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="es_MX" />
+    <meta property="og:site_name" content={site.shortName} />
+    {socialImageUrl && <meta property="og:image" content={socialImageUrl} />}
+    {canonicalUrl && <meta property="og:url" content={canonicalUrl} />}
+    {canonicalUrl && <link rel="canonical" href={canonicalUrl} />}
+    <meta name="theme-color" content="#08264c" />
+    <script
+      type="application/ld+json"
+      is:inline
+      set:html={JSON.stringify(organizationData)}
+    ></script>
+    <title>{seo.title}</title>
+  </head>
+  <body>
+    <a class="skip-link" href="#contenido-principal">Saltar al contenido</a>
+    <div class="site-shell">
+      <Header
+        navigation={site.navigation}
+        currentPath={currentPath}
+        organizationName={site.organizationName}
+        shortName={site.shortName}
+        logo={site.logo}
+      />
+      <Breadcrumbs items={breadcrumbs} />
+      <main id="contenido-principal" tabindex="-1">
+        <slot />
+      </main>
+      <Footer />
+    </div>
+  </body>
+</html>

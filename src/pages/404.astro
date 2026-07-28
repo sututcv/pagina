@@ -1,0 +1,50 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout
+  title="Página no encontrada"
+  description="La página solicitada no existe en el portal público del SUTUTCV."
+  noIndex={true}
+>
+  <section class="section not-found-section">
+    <div class="container surface-card not-found">
+      <p class="eyebrow">Ruta no encontrada</p>
+      <h1>404</h1>
+      <p>
+        La página solicitada no existe, cambió de dirección o aún no ha sido publicada.
+      </p>
+      <div class="button-row">
+        <a class="button button-primary" href="/">Volver al inicio</a>
+        <a class="button button-neutral" href="/noticias-y-eventos">Noticias y eventos</a>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .not-found-section {
+    display: grid;
+    place-items: center;
+    min-height: 55vh;
+  }
+
+  .not-found {
+    max-width: 46rem;
+    padding: 2rem;
+    text-align: center;
+  }
+
+  .not-found h1 {
+    font-size: clamp(4rem, 15vw, 8rem);
+  }
+
+  .not-found p:not(.eyebrow) {
+    margin: 1rem auto 0;
+    color: var(--color-text-muted);
+  }
+
+  .not-found .button-row {
+    justify-content: center;
+  }
+</style>

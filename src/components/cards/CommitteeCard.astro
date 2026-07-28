@@ -1,0 +1,93 @@
+---
+import type { CommitteeMember } from '../../types/content';
+
+interface Props {
+  member: CommitteeMember;
+  tone?: 'teal' | 'gold';
+}
+
+const { member, tone = 'teal' } = Astro.props;
+const initials = member.name
+  .replace(/^(Dr\.|Lic\.|Ing\.|Mtro\.)\s+/, '')
+  .split(' ')
+  .slice(0, 2)
+  .map((part) => part.charAt(0))
+  .join('');
+---
+
+<article class="committee-card surface-card">
+  <div class:list={['member-initials', { 'member-initials-gold': tone === 'gold' }]} aria-hidden="true">
+    {initials}
+  </div>
+  <div>
+    <h2>{member.name}</h2>
+    <p class="member-role">{member.role}</p>
+    <dl>
+      <div>
+        <dt>Correo</dt>
+        <dd>{member.area}</dd>
+      </div>
+      {member.function && <div><dt>Función general</dt><dd>{member.function}</dd></div>}
+      {member.email && <div><dt>Correo institucional</dt><dd><a href={`mailto:${member.email}`}>{member.email}</a></dd></div>}
+    </dl>
+  </div>
+</article>
+
+<style>
+  .committee-card {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 1rem;
+    align-items: start;
+    padding: 1.25rem;
+  }
+
+  .member-initials {
+    display: grid;
+    place-items: center;
+    width: 3.7rem;
+    height: 3.7rem;
+    border-radius: 50%;
+    background: var(--color-teal-50);
+    color: var(--color-teal-800);
+    font-family: var(--font-heading);
+    font-weight: 900;
+  }
+
+  .member-initials-gold {
+    background: var(--color-gold-50);
+    color: var(--color-gold-700);
+  }
+
+  .committee-card h2 {
+    font-size: 1.16rem;
+  }
+
+  .member-role {
+    margin: 0.35rem 0 0;
+    color: var(--color-text-muted);
+    font-weight: 700;
+  }
+
+  .committee-card dl {
+    display: grid;
+    gap: 0.65rem;
+    margin: 1rem 0 0;
+  }
+
+  .committee-card dl div {
+    display: grid;
+    gap: 0.15rem;
+  }
+
+  .committee-card dt {
+    color: var(--color-navy-900);
+    font-size: 0.86rem;
+    font-weight: 800;
+  }
+
+  .committee-card dd {
+    margin: 0;
+    color: var(--color-text-muted);
+  }
+</style>

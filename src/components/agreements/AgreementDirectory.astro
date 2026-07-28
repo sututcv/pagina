@@ -1,0 +1,104 @@
+---
+import AgreementCard from '../cards/AgreementCard.astro';
+import EmptyState from '../common/EmptyState.astro';
+import type { Agreement, AgreementCategory } from '../../types/content';
+
+interface Props {
+  agreements: Agreement[];
+  categories: AgreementCategory[];
+}
+
+const { agreements, categories } = Astro.props;
+---
+
+<div class="stack-lg" data-agreement-directory>
+  <form class="filter-bar" data-agreement-filter>
+    <div class="field">
+      <label for="agreement-search">Buscar convenio</label>
+      <input
+        id="agreement-search"
+        name="search"
+        type="search"
+        placeholder="Empresa, beneficio o servicio"
+        autocomplete="off"
+      />
+    </div>
+    <div class="field">
+      <label for="agreement-category">Categoría</label>
+      <select id="agreement-category" name="category">
+        <option value="">Todas las categorías</option>
+        {categories.map((category) => <option value={category}>{category}</option>)}
+      </select>
+    </div>
+    <div class="field">
+      <label for="agreement-status">Vigencia</label>
+      <select id="agreement-status" name="status">
+        <option value="">Todos los estados</option>
+        <option value="vigente">Vigente</option>
+        <option value="proximo-a-vencer">Próximo a vencer</option>
+        <option value="concluido">Concluido</option>
+        <option value="por-confirmar">Por confirmar</option>
+      </select>
+    </div>
+  </form>
+
+  <p class="result-count" aria-live="polite" data-result-count>
+    {agreements.length} {agreements.length === 1 ? 'convenio disponible' : 'convenios disponibles'}
+  </p>
+
+  <div class="stack-lg" data-agreement-results>
+    {agreements.map((agreement) => <AgreementCard agreement={agreement} />)}
+  </div>
+
+  <div data-no-results hidden>
+    <EmptyState
+      title="No se encontraron convenios"
+      description="Prueba con otro término o cambia los filtros de categoría y vigencia."
+    />
+  </div>
+</div>
+
+<script>
+  const normalize = (value: string) =>
+    value
+      .normalize('NFD')
+      .replace(/\p{Diacritic}/gu, '')
+      .toLocaleLowerCase('es-MX')
+      .trim();
+
+  document.querySelectorAll<HTMLElement>('[data-agreement-directory]').forEach((directory) => {
+    const form = directory.querySelector<HTMLFormElement>('[data-agreement-filter]');
+    const search = form?.elements.namedItem('search') as HTMLInputElement | null;
+    const category = form?.elements.namedItem('category') as HTMLSelectElement | null;
+    const status = form?.elements.namedItem('status') as HTMLSelectElement | null;
+    const cards = Array.from(directory.querySelectorAll<HTMLElement>('[data-agreement-card]'));
+    const count = directory.querySelector<HTMLElement>('[data-result-count]');
+    const noResults = directory.querySelector<HTMLElement>('[data-no-results]');
+
+    const applyFilters = () => {
+      const searchValue = normalize(search?.value ?? '');
+      const categoryValue = category?.value ?? '';
+      const statusValue = status?.value ?? '';
+      let visible = 0;
+
+      cards.forEach((card) => {
+        const matchesSearch = normalize(card.dataset.search ?? '').includes(searchValue);
+        const matchesCategory = !categoryValue || card.dataset.category === categoryValue;
+        const matchesStatus = !statusValue || card.dataset.status === statusValue;
+        const show = matchesSearch && matchesCategory && matchesStatus;
+        card.hidden = !show;
+        if (show) visible += 1;
+      });
+
+      if (count) {
+        count.textContent = `${visible} ${visible === 1 ? 'convenio disponible' : 'convenios disponibles'}`;
+      }
+      if (noResults) noResults.hidden = visible !== 0;
+    };
+
+    form?.addEventListener('submit', (event) => event.preventDefault());
+    search?.addEventListener('input', applyFilters);
+    category?.addEventListener('change', applyFilters);
+    status?.addEventListener('change', applyFilters);
+  });
+</script>
