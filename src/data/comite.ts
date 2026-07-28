@@ -1,4 +1,3 @@
-import type { email } from 'astro:schema';
 import { committeeMemberSchema, honorJusticeMemberSchema } from '../schemas/content';
 import type { CommitteeMember, HonorJusticeMember } from '../types/content';
 

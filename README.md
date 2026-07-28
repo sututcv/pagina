@@ -112,7 +112,9 @@ La lista operativa completa está centralizada en `src/data/pendientes.ts`.
 
 ## Despliegue
 
-El repositorio oficial es `https://github.com/sututcv/pagina`. Cada cambio enviado a la rama `main` activa `.github/workflows/deploy.yml`, que valida y construye el proyecto con la acción oficial de Astro y publica el resultado en GitHub Pages.
+El repositorio oficial es `https://github.com/sututcv/pagina`. Cada cambio enviado a la rama `main` activa `.github/workflows/deploy.yml`, que instala las dependencias, ejecuta las validaciones, construye el sitio estático y publica `dist/` en la rama `gh-pages`.
+
+GitHub Pages está configurado actualmente para servir la raíz de `gh-pages`. El workflow conserva esa fuente de publicación para que la cuenta colaboradora `emartinex` pueda desplegar sin requerir permisos administrativos sobre la configuración del repositorio.
 
 Antes de enviar cambios:
 
