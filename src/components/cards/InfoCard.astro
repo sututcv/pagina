@@ -1,0 +1,64 @@
+---
+interface Props {
+  title: string;
+  description: string;
+  href?: string;
+  meta?: string;
+  eyebrow?: string;
+  headingLevel?: 2 | 3;
+}
+
+const { title, description, href, meta, eyebrow, headingLevel = 3 } = Astro.props;
+const Heading = `h${headingLevel}` as 'h2' | 'h3';
+---
+
+<article class="info-card surface-card">
+  <div class="info-card-body">
+    {eyebrow && <p class="eyebrow">{eyebrow}</p>}
+    {meta && <p class="info-meta">{meta}</p>}
+    <Heading>{title}</Heading>
+    <p>{description}</p>
+  </div>
+  {
+    href && (
+      <a class="text-link" href={href}>
+        Ver información <span aria-hidden="true">→</span>
+      </a>
+    )
+  }
+</article>
+
+<style>
+  .info-card {
+    display: grid;
+    align-content: space-between;
+    gap: 1rem;
+    height: 100%;
+    padding: 1.35rem;
+  }
+
+  .info-card-body {
+    display: grid;
+    gap: 0.65rem;
+  }
+
+  .info-card h2,
+  .info-card h3 {
+    font-size: 1.18rem;
+  }
+
+  .info-card p {
+    margin: 0;
+    color: var(--color-text-muted);
+  }
+
+  .info-card .eyebrow {
+    color: var(--color-teal-800);
+  }
+
+  .info-meta {
+    color: var(--color-blue-700) !important;
+    font-size: 0.9rem;
+    font-weight: 800;
+  }
+</style>

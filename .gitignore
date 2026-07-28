@@ -1,0 +1,9 @@
+dist/
+.astro/
+coverage/
+node_modules/
+*.log
+.codesandbox/
+.trae/
+.vscode/
+superior-singularity/

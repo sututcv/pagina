@@ -1,0 +1,51 @@
+---
+import EmptyState from '../components/common/EmptyState.astro';
+import InfoCard from '../components/cards/InfoCard.astro';
+import PageHero from '../components/common/PageHero.astro';
+import SectionHeading from '../components/common/SectionHeading.astro';
+import Layout from '../layouts/Layout.astro';
+import { getNewsItems } from '../lib/content/site';
+
+const news = getNewsItems();
+---
+
+<Layout
+  title="Noticias"
+  description="Noticias y comunicados oficiales del SUTUTCV."
+  breadcrumbs={[
+    { label: 'Inicio', href: '/' },
+    { label: 'Noticias y eventos', href: '/noticias-y-eventos' },
+    { label: 'Noticias' },
+  ]}
+>
+  <PageHero
+    eyebrow="Comunicación institucional"
+    title="Noticias y comunicados"
+    description="Publicaciones oficiales con fecha, categoría, área responsable y archivos adjuntos autorizados."
+  />
+
+  <section class="section">
+    <div class="container stack-lg">
+      <SectionHeading title="Publicaciones recientes" />
+      {
+        news.length > 0 ? (
+          <div class="grid grid-3">
+            {news.map((item) => (
+              <InfoCard
+                title={item.title}
+                description={item.summary}
+                meta={`${item.category} · ${item.dateLabel}`}
+                href={`/noticias/${item.slug}`}
+              />
+            ))}
+          </div>
+        ) : (
+          <EmptyState
+            title="Sin noticias publicadas"
+            description="No se proporcionaron noticias o comunicados oficiales. La estructura está lista para incorporarlos sin inventar contenido."
+          />
+        )
+      }
+    </div>
+  </section>
+</Layout>

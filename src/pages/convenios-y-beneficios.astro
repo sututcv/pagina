@@ -1,0 +1,35 @@
+---
+import AgreementDirectory from '../components/agreements/AgreementDirectory.astro';
+import PageHero from '../components/common/PageHero.astro';
+import SectionHeading from '../components/common/SectionHeading.astro';
+import Layout from '../layouts/Layout.astro';
+import { getAgreementCategories, getAgreements } from '../lib/content/site';
+
+const agreements = getAgreements();
+const categories = getAgreementCategories();
+---
+
+<Layout
+  title="Convenios y beneficios"
+  description="Directorio público de convenios y beneficios disponibles para la comunidad SUTUTCV."
+  breadcrumbs={[
+    { label: 'Inicio', href: '/' },
+    { label: 'Convenios y beneficios' },
+  ]}
+>
+  <PageHero
+    eyebrow="Beneficios institucionales"
+    title="Convenios y beneficios"
+    description="Busca por empresa, servicio, categoría o estado de vigencia. La información se publica únicamente a partir de materiales proporcionados."
+  />
+
+  <section class="section">
+    <div class="container stack-lg">
+      <SectionHeading
+        title="Directorio de convenios"
+        description="Consulta beneficios, requisitos, restricciones y datos de contacto."
+      />
+      <AgreementDirectory agreements={agreements} categories={categories} />
+    </div>
+  </section>
+</Layout>

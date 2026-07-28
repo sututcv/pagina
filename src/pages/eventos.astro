@@ -1,0 +1,124 @@
+---
+import EventCard from '../components/cards/EventCard.astro';
+import EmptyState from '../components/common/EmptyState.astro';
+import PageHero from '../components/common/PageHero.astro';
+import SectionHeading from '../components/common/SectionHeading.astro';
+import Layout from '../layouts/Layout.astro';
+import { getPastEvents, getUpcomingEvents } from '../lib/content/site';
+
+const upcoming = getUpcomingEvents();
+const past = getPastEvents();
+---
+
+<Layout
+  title="Eventos"
+  description="Próximos eventos y archivo de actividades institucionales del SUTUTCV."
+  breadcrumbs={[
+    { label: 'Inicio', href: '/' },
+    { label: 'Noticias y eventos', href: '/noticias-y-eventos' },
+    { label: 'Eventos' },
+  ]}
+>
+  <PageHero
+    eyebrow="Agenda institucional"
+    title="Eventos"
+    description="Consulta próximas actividades y el archivo público de eventos realizados."
+  />
+
+  <section class="section section-white">
+    <div class="container stack-lg">
+      <SectionHeading
+        title="Próximos eventos"
+        description="Solo se muestran actividades con fecha, horario y lugar confirmados."
+      />
+      {
+        upcoming.length > 0 ? (
+          <div class="grid grid-3">{upcoming.map((event) => <EventCard event={event} />)}</div>
+        ) : (
+          <EmptyState
+            title="Sin eventos próximos publicados"
+            description="No se proporcionaron convocatorias futuras. Evitamos mostrar fechas o lugares no confirmados."
+          />
+        )
+      }
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container stack-lg">
+      <SectionHeading
+        eyebrow="Archivo 2026"
+        title="Actividades realizadas"
+        description="Archivo cronológico construido a partir de las carpetas y fotografías proporcionadas."
+      />
+      <div class="grid grid-3">
+        {past.map((event) => <EventCard event={event} />)}
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-white">
+    <div class="container stack-lg">
+      <SectionHeading
+        eyebrow="Calendario accesible"
+        title="Resumen cronológico"
+        description="Tabla de actividades disponible para navegación y lectura asistiva."
+      />
+      <div class="event-table-wrap">
+        <table>
+          <caption class="sr-only">Actividades institucionales realizadas durante 2026</caption>
+          <thead>
+            <tr>
+              <th scope="col">Fecha</th>
+              <th scope="col">Actividad</th>
+              <th scope="col">Estado</th>
+            </tr>
+          </thead>
+          <tbody>
+            {
+              [...past].reverse().map((event) => (
+                <tr>
+                  <td><time datetime={event.date}>{event.dateLabel}</time></td>
+                  <th scope="row"><a class="text-link" href={`/eventos/${event.slug}`}>{event.name}</a></th>
+                  <td>Realizado</td>
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .event-table-wrap {
+    overflow-x: auto;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+  }
+
+  table {
+    width: 100%;
+    min-width: 42rem;
+    border-collapse: collapse;
+    background: white;
+  }
+
+  th,
+  td {
+    padding: 0.85rem 1rem;
+    border-bottom: 1px solid var(--color-border);
+    text-align: left;
+  }
+
+  thead th {
+    background: var(--color-navy-900);
+    color: white;
+    font-family: var(--font-heading);
+  }
+
+  tbody tr:last-child > * {
+    border-bottom: 0;
+  }
+</style>

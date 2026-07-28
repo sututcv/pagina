@@ -1,0 +1,43 @@
+---
+import InfoCard from '../../components/cards/InfoCard.astro';
+import PageHero from '../../components/common/PageHero.astro';
+import Layout from '../../layouts/Layout.astro';
+import { getEvents, getNewsItems } from '../../lib/content/site';
+
+const news = getNewsItems();
+const events = getEvents();
+---
+
+<Layout
+  title="Noticias y eventos"
+  description="Acceso a noticias, comunicados y actividades públicas del SUTUTCV."
+  breadcrumbs={[
+    { label: 'Inicio', href: '/' },
+    { label: 'Noticias y eventos' },
+  ]}
+>
+  <PageHero
+    eyebrow="Información pública"
+    title="Noticias y eventos"
+    description="Noticias y eventos se administran como contenidos independientes para mantener fechas, archivos y estados claramente diferenciados."
+  />
+
+  <section class="section">
+    <div class="container grid grid-2">
+      <InfoCard
+        eyebrow={`${news.length} publicaciones`}
+        title="Noticias y comunicados"
+        description="Información oficial, comunicados y archivos públicos autorizados."
+        href="/noticias"
+        headingLevel={2}
+      />
+      <InfoCard
+        eyebrow={`${events.length} actividades`}
+        title="Eventos"
+        description="Agenda de próximos eventos y archivo de actividades institucionales realizadas."
+        href="/eventos"
+        headingLevel={2}
+      />
+    </div>
+  </section>
+</Layout>

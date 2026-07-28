@@ -1,0 +1,178 @@
+---
+import PageHero from '../../components/common/PageHero.astro';
+import Layout from '../../layouts/Layout.astro';
+import { getAgreements } from '../../lib/content/site';
+import type { Agreement } from '../../types/content';
+
+export function getStaticPaths() {
+  return getAgreements().map((agreement) => ({
+    params: { id: agreement.id },
+    props: { agreement },
+  }));
+}
+
+interface Props {
+  agreement: Agreement;
+}
+
+const { agreement } = Astro.props;
+const statusLabels = {
+  vigente: 'Vigente',
+  'proximo-a-vencer': 'Próximo a vencer',
+  concluido: 'Concluido',
+  'por-confirmar': 'Vigencia por confirmar',
+};
+const phoneHref = agreement.contact.phone?.replace(/\D/g, '');
+---
+
+<Layout
+  title={`${agreement.organization} — Convenio`}
+  description={agreement.summary}
+  image={agreement.image.src}
+  breadcrumbs={[
+    { label: 'Inicio', href: '/' },
+    { label: 'Convenios y beneficios', href: '/convenios-y-beneficios' },
+    { label: agreement.organization },
+  ]}
+>
+  <PageHero
+    eyebrow={agreement.category}
+    markerTitle="IMPORTANTE"
+    title={agreement.organization}
+    description={agreement.summary}
+    marker={agreement.status === 'por-confirmar'
+      ? 'En este apartado puedes informarte a detalle de los beneficios del convenio establecido. Te recomendamos leer a el siguiente apartado.'
+      : undefined}
+  />
+
+  <section class="section">
+    <div class="container detail-grid">
+      <div class="stack-lg">
+        <article class="surface-card detail-panel">
+          <div class="agreement-heading">
+            <div>
+              <p class="eyebrow">Beneficio</p>
+              <h2>{agreement.title}</h2>
+            </div>
+            <span class:list={['status-badge', `status-${agreement.status}`]}>
+              {statusLabels[agreement.status]}
+            </span>
+          </div>
+          <p>{agreement.benefitSummary}</p>
+          <ul class="plain-list">
+            {agreement.benefits.map((benefit) => <li>{benefit}</li>)}
+          </ul>
+          {
+            (agreement.publicDocument || agreement.externalUrl) && (
+              <div class="button-row">
+                {agreement.publicDocument && (
+                  <a class="button button-neutral" href={agreement.publicDocument} download>
+                    Descargar documento público
+                  </a>
+                )}
+                {agreement.externalUrl && (
+                  <a
+                    class="button button-neutral"
+                    href={agreement.externalUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Visitar sitio institucional
+                  </a>
+                )}
+              </div>
+            )
+          }
+        </article>
+
+        <div class="grid grid-2">
+          <article class="surface-card detail-panel">
+            <h2>Personas beneficiarias</h2>
+            <ul class="plain-list">
+              {agreement.beneficiaries.map((beneficiary) => <li>{beneficiary}</li>)}
+            </ul>
+          </article>
+
+          <article class="surface-card detail-panel">
+            <h2>Requisitos</h2>
+            {
+              agreement.requirements.length > 0 ? (
+                <ul class="plain-list">
+                  {agreement.requirements.map((requirement) => <li>{requirement}</li>)}
+                </ul>
+              ) : (
+                <p>No se especificaron requisitos adicionales.</p>
+              )
+            }
+          </article>
+
+          <article class="surface-card detail-panel">
+            <h2>Restricciones y vigencia</h2>
+            <ul class="plain-list">
+              {agreement.restrictions.map((restriction) => <li>{restriction}</li>)}
+            </ul>
+            <p><strong>Vigencia:</strong> {agreement.validityLabel}</p>
+            {agreement.referenceDate && <p><strong>Fecha del material:</strong> <time datetime={agreement.referenceDate}>2 de julio de 2026</time></p>}
+          </article>
+
+          <article class="surface-card detail-panel">
+            <h2>Sucursal y contacto</h2>
+            <ul class="meta-list">
+              {agreement.contact.address && <li><strong>Dirección</strong>{agreement.contact.address}</li>}
+              {agreement.contact.phone && <li><strong>Teléfono</strong><a class="text-link" href={`tel:+52${phoneHref}`}>{agreement.contact.phone}</a></li>}
+              {agreement.contact.email && <li><strong>Correo</strong><a class="text-link" href={`mailto:${agreement.contact.email}`}>{agreement.contact.email}</a></li>}
+              {agreement.contact.instagram && <li><strong>Instagram</strong>{agreement.contact.instagram}</li>}
+              {agreement.contact.facebook && <li><strong>Facebook</strong>{agreement.contact.facebook}</li>}
+            </ul>
+          </article>
+        </div>
+      </div>
+
+      <aside class="agreement-flyer stack">
+        <div class="image-frame">
+          <img
+            src={agreement.image.src}
+            alt={agreement.image.alt}
+            width={agreement.image.width}
+            height={agreement.image.height}
+            loading="lazy"
+          />
+        </div>
+        <p>
+          Para mayores informes consulta con los representantes sindicales o directamente con la empresa.
+        </p>
+      </aside>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .agreement-heading {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: start;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .detail-panel > p {
+    color: var(--color-text-muted);
+  }
+
+  .agreement-flyer {
+    position: sticky;
+    top: 7rem;
+  }
+
+  .agreement-flyer .image-frame img {
+    object-fit: contain;
+    background: white;
+  }
+
+  .agreement-flyer > p {
+    margin: 0;
+    color: var(--color-text-muted);
+    font-size: 0.9rem;
+  }
+</style>

@@ -1,0 +1,195 @@
+---
+import { getSiteConfig, getUnionContent } from '../../lib/content/site';
+
+const site = getSiteConfig();
+const publicDocuments = getUnionContent().documents.filter(
+  (document) => document.authorized && document.file,
+);
+const year = new Date().getFullYear();
+const contactItems = [
+  { label: 'Dirección', value: site.contact.address },
+  { label: 'Horario', value: site.contact.hours },
+  { label: 'Teléfono', value: site.contact.phone },
+  { label: 'Correo', value: site.contact.email },
+].filter((item) => item.value);
+---
+
+<footer class="site-footer">
+  <div class="container footer-grid">
+    <section class="footer-brand" aria-labelledby="footer-brand-title">
+      <img src={site.logo.src} alt="" width={site.logo.width} height={site.logo.height} loading="lazy" />
+      <div>
+        <h2 id="footer-brand-title">{site.shortName}</h2>
+        <p>{site.organizationName}</p>
+        <p class="footer-slogan">{site.slogan}</p>
+      </div>
+    </section>
+
+    <nav aria-label="Enlaces del pie de página">
+      <h2>Secciones</h2>
+      <ul>
+        {site.navigation.map((item) => <li><a href={item.href}>{item.label}</a></li>)}
+      </ul>
+    </nav>
+
+    {
+      contactItems.length > 0 && (
+        <section>
+          <h2>Contacto institucional</h2>
+          <dl>
+            {contactItems.map((item) => (
+              <div>
+                <dt>{item.label}</dt>
+                <dd>{item.value}</dd>
+              </div>
+            ))}
+          </dl>
+        </section>
+      )
+    }
+
+    {
+      site.socials.length > 0 && (
+        <section>
+          <h2>Redes sociales</h2>
+          <ul>
+            {site.socials.map((social) => (
+              <li>
+                <a href={social.href} target="_blank" rel="noopener noreferrer">
+                  {social.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )
+    }
+
+    {
+      (site.privacyUrl || publicDocuments.length > 0) && (
+        <nav aria-label="Privacidad y documentos">
+          <h2>Información pública</h2>
+          <ul>
+            {site.privacyUrl && <li><a href={site.privacyUrl}>Aviso de privacidad</a></li>}
+            {publicDocuments.map((document) => (
+              <li><a href={document.file}>{document.title}</a></li>
+            ))}
+          </ul>
+        </nav>
+      )
+    }
+
+    <section>
+      <h2>Publicación</h2>
+      <p>Sitio público informativo. No utiliza cookies de seguimiento ni servicios analíticos externos.</p>
+      {site.contentOwner && <p>Responsable de contenidos: {site.contentOwner}</p>}
+      <p>Última actualización: {site.lastUpdated}</p>
+    </section>
+  </div>
+
+  <div class="container footer-bottom">
+    <p>© {year} {site.shortName}. Información institucional.</p>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    margin-top: auto;
+    padding: 3rem 0 1.5rem;
+    background: var(--color-navy-950);
+    color: rgba(255, 255, 255, 0.86);
+  }
+
+  .footer-grid {
+    display: grid;
+    gap: 2rem;
+  }
+
+  .footer-brand {
+    display: grid;
+    grid-template-columns: 5rem minmax(0, 1fr);
+    gap: 1rem;
+    align-items: start;
+  }
+
+  .footer-brand img {
+    width: 5rem;
+    height: 5rem;
+    object-fit: contain;
+    filter: drop-shadow(0 8px 20px rgba(0, 0, 0, 0.18));
+  }
+
+  .site-footer h2 {
+    margin: 0 0 0.75rem;
+    color: white;
+    font-size: 1rem;
+  }
+
+  .footer-brand p,
+  .site-footer section > p {
+    margin: 0.3rem 0;
+    max-width: 37ch;
+  }
+
+  .footer-slogan {
+    color: #a8e0e4;
+    font-weight: 700;
+  }
+
+  .site-footer ul {
+    display: grid;
+    gap: 0.45rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .site-footer a {
+    text-decoration: underline;
+    text-decoration-color: transparent;
+    text-underline-offset: 0.25rem;
+  }
+
+  .site-footer a:hover {
+    text-decoration-color: currentColor;
+  }
+
+  .site-footer dl,
+  .site-footer dd {
+    margin: 0;
+  }
+
+  .site-footer dl {
+    display: grid;
+    gap: 0.65rem;
+  }
+
+  .site-footer dt {
+    color: white;
+    font-weight: 800;
+  }
+
+  .footer-bottom {
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.16);
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.9rem;
+  }
+
+  .footer-bottom p {
+    margin: 0;
+  }
+
+  @media (min-width: 48rem) {
+    .footer-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 68rem) {
+    .footer-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+</style>

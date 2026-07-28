@@ -1,0 +1,161 @@
+---
+import EmptyState from '../components/common/EmptyState.astro';
+import PageHero from '../components/common/PageHero.astro';
+import SectionHeading from '../components/common/SectionHeading.astro';
+import InfoCard from '../components/cards/InfoCard.astro';
+import Layout from '../layouts/Layout.astro';
+import { getUnionContent } from '../lib/content/site';
+
+const content = getUnionContent();
+---
+
+<Layout
+  title="Nuestro sindicato"
+  description="Quiénes somos, misión, visión, valores y documentos institucionales del SUTUTCV."
+  breadcrumbs={[
+    { label: 'Inicio', href: '/' },
+    { label: 'Nuestro sindicato' },
+  ]}
+>
+  <PageHero
+    eyebrow="Identidad institucional"
+    title="Nuestro sindicato"
+    description="Una comunidad organizada para representar, defender y fortalecer los derechos e intereses laborales de sus agremiados."
+  />
+
+  <section class="section section-white">
+    <div class="container content-prose">
+      <p class="eyebrow">Quiénes somos</p>
+      <h2 class="section-title">Sindicato Único de Trabajadores de la UTCV</h2>
+      {content.introduction.map((paragraph) => <p>{paragraph}</p>)}
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container stack-lg">
+      <SectionHeading
+        eyebrow="Objetivos"
+        title="Lo que buscamos fortalecer"
+        description={content.reason.join(' ')}
+      />
+      <div class="grid grid-2">
+        {
+          content.pillars.map((pillar) => (
+            <InfoCard title={pillar.title} description={pillar.description} />
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-white">
+    <div class="container content-prose">
+      <p class="eyebrow">Comunidad</p>
+      <h2 class="section-title">Somos SUTUTCV</h2>
+      {content.community.map((paragraph) => <p>{paragraph}</p>)}
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container mission-grid">
+      <article class="surface-card statement-card">
+        <p class="eyebrow">Misión</p>
+        <h2>Representar y defender</h2>
+        {content.mission.map((paragraph) => <p>{paragraph}</p>)}
+      </article>
+      <article class="surface-card statement-card">
+        <p class="eyebrow">Visión</p>
+        <h2>Un sindicato unido y participativo</h2>
+        {content.vision.map((paragraph) => <p>{paragraph}</p>)}
+      </article>
+    </div>
+  </section>
+
+  <section class="section section-white">
+    <div class="container stack-lg">
+      <SectionHeading
+        eyebrow="Principios"
+        title="Nuestros valores"
+        description="Principios que orientan la representación sindical y la vida colectiva."
+      />
+      <div class="grid grid-3">
+        {
+          content.values.map((value) => (
+            <InfoCard title={value.title} description={value.description} />
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section id="historia" class="section">
+    <div class="container stack-lg">
+      <SectionHeading
+        eyebrow="Memoria institucional"
+        title="Historia y principales logros"
+        description="Este contenido requiere información verificable antes de su publicación."
+      />
+      <div class="pending-panel">
+        <strong>Pendiente de contenido autorizado</strong>
+        La historia institucional y los principales logros no se incluyeron en los archivos proporcionados.
+      </div>
+    </div>
+  </section>
+
+  <section id="documentos" class="section section-white">
+    <div class="container stack-lg">
+      <SectionHeading
+        eyebrow="Transparencia"
+        title="Documentos institucionales"
+        description="Solo se publicarán versiones revisadas que no expongan firmas ni datos personales."
+      />
+      {
+        content.documents.length > 0 ? (
+          <div class="grid grid-2">
+            {content.documents.map((document) => (
+              <InfoCard
+                title={document.title}
+                description={document.description}
+                meta={[document.type, document.version, document.validity]
+                  .filter(Boolean)
+                  .join(' · ')}
+                href={document.authorized ? document.file : undefined}
+              />
+            ))}
+          </div>
+        ) : (
+          <EmptyState
+            title="Documentos pendientes de autorización"
+            description="Aún no se proporcionaron versiones públicas del Contrato UTCV ni de las Condiciones Generales de Trabajo SUTUTCV 2024-2026."
+          />
+        )
+      }
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .mission-grid {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .statement-card {
+    padding: 1.5rem;
+  }
+
+  .statement-card h2 {
+    margin-bottom: 1rem;
+    font-size: 1.45rem;
+  }
+
+  .statement-card p:not(.eyebrow) {
+    color: var(--color-text-muted);
+  }
+
+  @media (min-width: 54rem) {
+    .mission-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+</style>

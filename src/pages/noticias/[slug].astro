@@ -1,0 +1,117 @@
+---
+import PageHero from '../../components/common/PageHero.astro';
+import Layout from '../../layouts/Layout.astro';
+import { getNewsItems } from '../../lib/content/site';
+import type { NewsItem } from '../../types/content';
+
+export function getStaticPaths() {
+  return getNewsItems().map((item) => ({
+    params: { slug: item.slug },
+    props: { item },
+  }));
+}
+
+interface Props {
+  item: NewsItem;
+}
+
+const { item } = Astro.props;
+const publicAttachments = item.attachments.filter(
+  (attachment) => attachment.authorized && attachment.file,
+);
+---
+
+<Layout
+  title={item.title}
+  description={item.summary}
+  image={item.image?.src}
+  breadcrumbs={[
+    { label: 'Inicio', href: '/' },
+    { label: 'Noticias y eventos', href: '/noticias-y-eventos' },
+    { label: 'Noticias', href: '/noticias' },
+    { label: item.title },
+  ]}
+>
+  <PageHero eyebrow={item.category} title={item.title} description={item.summary} />
+  <article class="section">
+    <div class="container news-layout">
+      <div class="content-prose surface-card news-article">
+        <p class="news-meta">
+          <time datetime={item.date}>{item.dateLabel}</time>
+          {item.author && <span> · {item.author}</span>}
+        </p>
+        {
+          item.content.map((paragraph) => (
+            <p>
+              {
+                paragraph.split(/(\*\*[^*]+\*\*)/g).map((fragment) =>
+                  fragment.startsWith('**') && fragment.endsWith('**') ? (
+                    <strong>{fragment.slice(2, -2)}</strong>
+                  ) : (
+                    fragment
+                  ),
+                )
+              }
+            </p>
+          ))
+        }
+        {
+          publicAttachments.length > 0 && (
+            <>
+              <h2>Archivos adjuntos</h2>
+              <ul class="plain-list">
+                {publicAttachments.map((attachment) => (
+                  <li>
+                    <a class="text-link" href={attachment.file} download>
+                      {attachment.title} ({attachment.type})
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </>
+          )
+        }
+      </div>
+      {
+        item.image && (
+          <aside class="image-frame news-image">
+            <img
+              src={item.image.src}
+              alt={item.image.alt}
+              width={item.image.width}
+              height={item.image.height}
+              loading="lazy"
+            />
+          </aside>
+        )
+      }
+    </div>
+  </article>
+</Layout>
+
+<style>
+  .news-layout {
+    display: grid;
+    gap: 1.5rem;
+    align-items: start;
+  }
+
+  .news-article {
+    padding: 1.5rem;
+  }
+
+  .news-meta {
+    color: var(--color-teal-800);
+    font-weight: 800;
+  }
+
+  .news-image {
+    max-height: 32rem;
+  }
+
+  @media (min-width: 58rem) {
+    .news-layout:has(.news-image) {
+      grid-template-columns: minmax(0, 1.25fr) minmax(18rem, 0.75fr);
+    }
+  }
+</style>

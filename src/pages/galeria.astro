@@ -1,0 +1,37 @@
+---
+import AlbumCard from '../components/cards/AlbumCard.astro';
+import PageHero from '../components/common/PageHero.astro';
+import SectionHeading from '../components/common/SectionHeading.astro';
+import Layout from '../layouts/Layout.astro';
+import { getGalleryAlbums } from '../lib/content/site';
+
+const albums = getGalleryAlbums();
+---
+
+<Layout
+  title="Galería"
+  description="Álbumes públicos de actividades institucionales del SUTUTCV."
+  breadcrumbs={[
+    { label: 'Inicio', href: '/' },
+    { label: 'Galería' },
+  ]}
+  image={albums[0]?.cover.src}
+>
+  <PageHero
+    eyebrow="Memoria visual"
+    title="Galería"
+    //description="Selección de fotografías autorizadas y revisadas para evitar datos personales, gafetes, documentos y otras exposiciones sensibles."
+  />
+
+  <section class="section">
+    <div class="container stack-lg">
+      <SectionHeading
+        title="Álbumes 2026"
+        description={`${albums.length} álbumes organizados cronológicamente.`}
+      />
+      <div class="grid grid-3">
+        {albums.map((album) => <AlbumCard album={album} />)}
+      </div>
+    </div>
+  </section>
+</Layout>
