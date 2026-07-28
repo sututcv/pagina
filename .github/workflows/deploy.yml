@@ -3,6 +3,8 @@ name: Build and deploy Astro site
 on:
   push:
     branches: [main]
+  pull_request:
+    branches: [main]
   workflow_dispatch:
 
 permissions:
@@ -41,6 +43,7 @@ jobs:
       # so the workflow updates the active publishing branch after a
       # successful build.
       - name: Publish dist to gh-pages
+        if: github.event_name != 'pull_request'
         uses: peaceiris/actions-gh-pages@v4.1.0
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}

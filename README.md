@@ -116,6 +116,8 @@ El repositorio oficial es `https://github.com/sututcv/pagina`. Cada cambio envia
 
 GitHub Pages está configurado actualmente para servir la raíz de `gh-pages`. El workflow conserva esa fuente de publicación para que la cuenta colaboradora `emartinex` pueda desplegar sin requerir permisos administrativos sobre la configuración del repositorio.
 
+Los pull requests hacia `main` ejecutan las mismas validaciones y el mismo build, pero no publican el sitio hasta que los cambios se integran.
+
 Antes de enviar cambios:
 
 ```powershell
