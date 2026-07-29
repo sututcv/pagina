@@ -7,7 +7,7 @@ export interface SeoInput {
 
 export function buildTitle(title: string) {
   const site = getSiteConfig();
-  return title === 'Inicio' ? `${site.shortName} | Portal público institucional` : `${title} | ${site.shortName}`;
+  return title === 'Inicio' ? `${site.shortName} | Sindicato Único de Trabajadores de la UTCV` : `${title} | ${site.shortName}`;
 }
 
 export function getDefaultDescription() {

@@ -74,7 +74,7 @@ const recentAlbums = getGalleryAlbums().slice(0, 3);
       <SectionHeading
         eyebrow="Beneficios"
         title="Convenios destacados"
-        description="Información tomada directamente de los materiales proporcionados y sin datos ficticios."
+        description="Conoce los últimos convenios y beneficios que el sindicato ofrece a sus agremiados."
       />
       <div class="stack-lg">
         {agreements.map((agreement) => <AgreementCard agreement={agreement} />)}
@@ -88,7 +88,7 @@ const recentAlbums = getGalleryAlbums().slice(0, 3);
         <SectionHeading
           eyebrow="Comunicación"
           title="Noticias recientes"
-          description="Comunicados oficiales autorizados para publicación."
+          description="Comunicados oficiales de relevancia sindical."
         />
         {
           news.length > 0 ? (
@@ -115,7 +115,7 @@ const recentAlbums = getGalleryAlbums().slice(0, 3);
         <SectionHeading
           eyebrow="Agenda"
           title="Próximos eventos"
-          description="Actividades futuras con información confirmada."
+          description="Actividades futuras para los agremiados."
         />
         {
           upcomingEvents.length > 0 ? (
@@ -139,7 +139,7 @@ const recentAlbums = getGalleryAlbums().slice(0, 3);
       <SectionHeading
         eyebrow="Memoria institucional"
         title="Galería reciente"
-        description="Selección de fotografías revisadas para evitar la publicación de datos personales o documentos visibles."
+        description="Selección de eventos mas recientes del gremio."
       />
       <div class="grid grid-3">
         {recentAlbums.map((album) => <AlbumCard album={album} />)}
