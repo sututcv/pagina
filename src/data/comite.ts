@@ -6,7 +6,7 @@ export const committeeMembers: CommitteeMember[] = [
     id: 'juan-carlos-nunez-dorantes',
     name: 'Dr. Juan Carlos Núñez Dorantes',
     role: 'Secretario General',
-    area: 'secretaria.general@sututcv.org.mx',
+    area: 'secretario.general@sututcv.org.mx',
     order: 1,
   },
   {
@@ -20,14 +20,14 @@ export const committeeMembers: CommitteeMember[] = [
     id: 'alejandra-salomon-castillo',
     name: 'Lic. Alejandra Salomón Castillo',
     role: 'Secretaria de Trabajo y Conflictos',
-    area: 'trabajo.conflictos@sututcv.org.mx',
+    area: 'secretaria.trabajo@sututcv.org.mx',
     order: 3,
   },
   {
     id: 'erik-gerardo-martinez-galindo',
     name: 'Ing. Erik Gerardo Martínez Galindo',
     role: 'Secretario de Actas y Acuerdos',
-    area: 'actas.acuerdos@sututcv.org.mx',
+    area: 'actas@sututcv.org.mx',
     order: 4,
   },
   {
@@ -41,7 +41,7 @@ export const committeeMembers: CommitteeMember[] = [
     id: 'jose-antonio-mendez-flores',
     name: 'Lic. José Antonio Méndez Flores',
     role: 'Secretario de Capacitación, Seguridad e Higiene',
-    area: 'capacitacion.seguridad.higiene@sututcv.org.mx',
+    area: 'capacitacion@sututcv.org.mx',
     order: 6,
   },
   {
