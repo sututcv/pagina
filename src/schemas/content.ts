@@ -154,6 +154,11 @@ export const agreementSchema = z.object({
   externalUrl: z.url().optional(),
 });
 
+export const galleryPhotoSchema = imageAssetSchema.extend({
+  id: z.string().min(1),
+  caption: z.string().min(1),
+});
+
 export const newsItemSchema = z.object({
   slug: z.string().min(1),
   title: z.string().min(1),
@@ -164,6 +169,7 @@ export const newsItemSchema = z.object({
   dateLabel: z.string().min(1),
   author: z.string().optional(),
   image: imageAssetSchema.optional(),
+  photos: z.array(galleryPhotoSchema).min(1).optional(),
   attachments: z.array(publicDocumentSchema),
 });
 
@@ -183,11 +189,6 @@ export const eventItemSchema = z.object({
   registrationUrl: z.url().optional(),
   callDocument: z.string().startsWith('/').optional(),
   gallerySlug: z.string().optional(),
-});
-
-export const galleryPhotoSchema = imageAssetSchema.extend({
-  id: z.string().min(1),
-  caption: z.string().min(1),
 });
 
 export const galleryAlbumSchema = z.object({

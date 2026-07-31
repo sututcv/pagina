@@ -1,4 +1,5 @@
 ---
+import PhotoCarousel from '../../components/news/PhotoCarousel.astro';
 import PageHero from '../../components/common/PageHero.astro';
 import Layout from '../../layouts/Layout.astro';
 import { getNewsItems } from '../../lib/content/site';
@@ -34,62 +35,70 @@ const publicAttachments = item.attachments.filter(
 >
   <PageHero eyebrow={item.category} title={item.title} description={item.summary} />
   <article class="section">
-    <div class="container news-layout">
-      <div class="content-prose surface-card news-article">
-        <p class="news-meta">
-          <time datetime={item.date}>{item.dateLabel}</time>
-          {item.author && <span> · {item.author}</span>}
-        </p>
+    <div class="container news-page">
+      <div class="news-layout">
+        <div class="content-prose surface-card news-article">
+          <p class="news-meta">
+            <time datetime={item.date}>{item.dateLabel}</time>
+            {item.author && <span> · {item.author}</span>}
+          </p>
+          {
+            item.content.map((paragraph) => (
+              <p>
+                {
+                  paragraph.split(/(\*\*[^*]+\*\*)/g).map((fragment) =>
+                    fragment.startsWith('**') && fragment.endsWith('**') ? (
+                      <strong>{fragment.slice(2, -2)}</strong>
+                    ) : (
+                      fragment
+                    ),
+                  )
+                }
+              </p>
+            ))
+          }
+          {
+            publicAttachments.length > 0 && (
+              <>
+                <h2>Archivos adjuntos</h2>
+                <ul class="plain-list">
+                  {publicAttachments.map((attachment) => (
+                    <li>
+                      <a class="text-link" href={attachment.file} download>
+                        {attachment.title} ({attachment.type})
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </>
+            )
+          }
+        </div>
         {
-          item.content.map((paragraph) => (
-            <p>
-              {
-                paragraph.split(/(\*\*[^*]+\*\*)/g).map((fragment) =>
-                  fragment.startsWith('**') && fragment.endsWith('**') ? (
-                    <strong>{fragment.slice(2, -2)}</strong>
-                  ) : (
-                    fragment
-                  ),
-                )
-              }
-            </p>
-          ))
-        }
-        {
-          publicAttachments.length > 0 && (
-            <>
-              <h2>Archivos adjuntos</h2>
-              <ul class="plain-list">
-                {publicAttachments.map((attachment) => (
-                  <li>
-                    <a class="text-link" href={attachment.file} download>
-                      {attachment.title} ({attachment.type})
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </>
+          item.image && (
+            <aside class="image-frame news-image">
+              <img
+                src={item.image.src}
+                alt={item.image.alt}
+                width={item.image.width}
+                height={item.image.height}
+                loading="lazy"
+              />
+            </aside>
           )
         }
       </div>
-      {
-        item.image && (
-          <aside class="image-frame news-image">
-            <img
-              src={item.image.src}
-              alt={item.image.alt}
-              width={item.image.width}
-              height={item.image.height}
-              loading="lazy"
-            />
-          </aside>
-        )
-      }
+      {item.photos && <PhotoCarousel photos={item.photos} />}
     </div>
   </article>
 </Layout>
 
 <style>
+  .news-page {
+    display: grid;
+    gap: 2rem;
+  }
+
   .news-layout {
     display: grid;
     gap: 1.5rem;

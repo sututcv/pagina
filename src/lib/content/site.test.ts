@@ -64,13 +64,22 @@ describe('site content', () => {
     expect(agreement?.image.src.startsWith('/media/convenios/')).toBe(true);
   });
 
-  it('publica la nota del convenio con Alianza y su fotografía', () => {
+  it('publica la nota del convenio con Alianza y su galería fotográfica', () => {
     const [newsItem] = getNewsItems();
 
     expect(newsItem?.slug).toBe('sututcv-firma-convenio-alianza-centro-estudios-medicos');
     expect(newsItem?.date).toBe('2026-07-02');
     expect(newsItem?.content).toHaveLength(2);
     expect(newsItem?.image?.src).toBe('/media/noticias/firma-convenio-alianza.webp');
+    expect(newsItem?.photos).toHaveLength(11);
+    expect(
+      newsItem?.photos?.every(
+        (photo) =>
+          photo.src.startsWith('/media/noticias/alianza/') &&
+          photo.alt.length > 0 &&
+          photo.caption.length > 0,
+      ),
+    ).toBe(true);
   });
 
   it('relaciona cada actividad realizada con una galería revisada', () => {
