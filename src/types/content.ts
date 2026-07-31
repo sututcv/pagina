@@ -169,6 +169,7 @@ export interface NewsItem {
   dateLabel: string;
   author?: string;
   image?: ImageAsset;
+  photos?: GalleryPhoto[];
   attachments: PublicDocument[];
 }
 

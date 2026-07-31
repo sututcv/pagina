@@ -1,0 +1,446 @@
+---
+import type { GalleryPhoto } from '../../types/content';
+
+interface Props {
+  photos: GalleryPhoto[];
+  title?: string;
+}
+
+const {
+  photos,
+  title = 'Conoce las instalaciones',
+} = Astro.props;
+const carouselId = `photo-carousel-${title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
+---
+
+{
+  photos.length > 0 && (
+    <section
+      class="photo-carousel surface-card"
+      data-photo-carousel
+      aria-labelledby={`${carouselId}-title`}
+      aria-roledescription="carrusel"
+    >
+      <header class="carousel-header">
+        <div>
+          <p class="eyebrow">Galería fotográfica</p>
+          <h2 id={`${carouselId}-title`}>{title}</h2>
+          <p class="carousel-intro" id={`${carouselId}-instructions`}>
+            Usa las flechas o selecciona una miniatura para recorrer las fotografías.
+          </p>
+        </div>
+        <p class="carousel-position" aria-hidden="true">
+          <span data-carousel-current>1</span>
+          <span>/</span>
+          <span>{photos.length}</span>
+        </p>
+      </header>
+
+      <div
+        class="carousel-viewport"
+        data-carousel-viewport
+        role="group"
+        tabindex="0"
+        aria-label={`Carrusel con ${photos.length} fotografías`}
+        aria-describedby={`${carouselId}-instructions`}
+      >
+        <div class="carousel-stage" id={`${carouselId}-slides`}>
+          {
+            photos.map((photo, index) => (
+              <figure
+                class="carousel-slide"
+                data-carousel-slide
+                data-caption={photo.caption}
+                role="group"
+                aria-roledescription="diapositiva"
+                aria-label={`${index + 1} de ${photos.length}`}
+                aria-hidden={index === 0 ? 'false' : 'true'}
+                hidden={index !== 0}
+              >
+                <img
+                  src={photo.src}
+                  alt={photo.alt}
+                  width={photo.width}
+                  height={photo.height}
+                  loading="lazy"
+                  decoding="async"
+                />
+              </figure>
+            ))
+          }
+
+          {
+            photos.length > 1 && (
+              <>
+                <button
+                  type="button"
+                  class="carousel-arrow carousel-arrow-previous"
+                  data-carousel-previous
+                  aria-controls={`${carouselId}-slides`}
+                  aria-label="Mostrar fotografía anterior"
+                >
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="m15 18-6-6 6-6" />
+                  </svg>
+                </button>
+                <button
+                  type="button"
+                  class="carousel-arrow carousel-arrow-next"
+                  data-carousel-next
+                  aria-controls={`${carouselId}-slides`}
+                  aria-label="Mostrar fotografía siguiente"
+                >
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="m9 18 6-6-6-6" />
+                  </svg>
+                </button>
+              </>
+            )
+          }
+        </div>
+
+        <div class="carousel-caption">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M4 5h16v14H4zM4 15l4-4 4 4 2-2 6 6M15.5 9a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Z" />
+          </svg>
+          <p data-carousel-caption>{photos[0]?.caption}</p>
+        </div>
+      </div>
+
+      {
+        photos.length > 1 && (
+          <nav class="carousel-thumbnails" aria-label="Seleccionar fotografía">
+            {photos.map((photo, index) => (
+              <button
+                type="button"
+                class="carousel-thumbnail"
+                data-carousel-thumbnail
+                data-photo-index={index}
+                aria-label={`Mostrar fotografía ${index + 1}: ${photo.alt}`}
+                aria-current={index === 0 ? 'true' : 'false'}
+              >
+                <img
+                  src={photo.src}
+                  alt=""
+                  width={photo.width}
+                  height={photo.height}
+                  loading="lazy"
+                  decoding="async"
+                />
+                <span aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
+              </button>
+            ))}
+          </nav>
+        )
+      }
+
+      <p class="sr-only" data-carousel-status aria-live="polite" aria-atomic="true">
+        Fotografía 1 de {photos.length}: {photos[0]?.caption}
+      </p>
+    </section>
+  )
+}
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-photo-carousel]').forEach((carousel) => {
+    const slides = Array.from(carousel.querySelectorAll<HTMLElement>('[data-carousel-slide]'));
+    const thumbnails = Array.from(
+      carousel.querySelectorAll<HTMLButtonElement>('[data-carousel-thumbnail]'),
+    );
+    const viewport = carousel.querySelector<HTMLElement>('[data-carousel-viewport]');
+    const current = carousel.querySelector<HTMLElement>('[data-carousel-current]');
+    const caption = carousel.querySelector<HTMLElement>('[data-carousel-caption]');
+    const status = carousel.querySelector<HTMLElement>('[data-carousel-status]');
+    const previous = carousel.querySelector<HTMLButtonElement>('[data-carousel-previous]');
+    const next = carousel.querySelector<HTMLButtonElement>('[data-carousel-next]');
+    let currentIndex = 0;
+    let pointerStartX: number | null = null;
+
+    const showPhoto = (requestedIndex: number) => {
+      if (slides.length === 0) return;
+
+      currentIndex = (requestedIndex + slides.length) % slides.length;
+      slides.forEach((slide, index) => {
+        const isCurrent = index === currentIndex;
+        slide.hidden = !isCurrent;
+        slide.setAttribute('aria-hidden', String(!isCurrent));
+      });
+
+      thumbnails.forEach((thumbnail, index) => {
+        thumbnail.setAttribute('aria-current', String(index === currentIndex));
+      });
+
+      const activeSlide = slides[currentIndex];
+      const activeThumbnail = thumbnails[currentIndex];
+      const activeCaption = activeSlide?.dataset.caption ?? '';
+
+      if (current) current.textContent = String(currentIndex + 1);
+      if (caption) caption.textContent = activeCaption;
+      if (status) {
+        status.textContent = `Fotografía ${currentIndex + 1} de ${slides.length}: ${activeCaption}`;
+      }
+      activeThumbnail?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+    };
+
+    previous?.addEventListener('click', () => showPhoto(currentIndex - 1));
+    next?.addEventListener('click', () => showPhoto(currentIndex + 1));
+
+    thumbnails.forEach((thumbnail) => {
+      thumbnail.addEventListener('click', () => {
+        showPhoto(Number(thumbnail.dataset.photoIndex ?? 0));
+      });
+    });
+
+    viewport?.addEventListener('keydown', (event) => {
+      if (event.key === 'ArrowLeft') {
+        event.preventDefault();
+        showPhoto(currentIndex - 1);
+      } else if (event.key === 'ArrowRight') {
+        event.preventDefault();
+        showPhoto(currentIndex + 1);
+      } else if (event.key === 'Home') {
+        event.preventDefault();
+        showPhoto(0);
+      } else if (event.key === 'End') {
+        event.preventDefault();
+        showPhoto(slides.length - 1);
+      }
+    });
+
+    viewport?.addEventListener('pointerdown', (event) => {
+      if (event.pointerType === 'touch') pointerStartX = event.clientX;
+    });
+
+    viewport?.addEventListener('pointerup', (event) => {
+      if (pointerStartX === null || event.pointerType !== 'touch') return;
+      const distance = event.clientX - pointerStartX;
+      pointerStartX = null;
+
+      if (Math.abs(distance) < 48) return;
+      showPhoto(distance < 0 ? currentIndex + 1 : currentIndex - 1);
+    });
+
+    viewport?.addEventListener('pointercancel', () => {
+      pointerStartX = null;
+    });
+  });
+</script>
+
+<style>
+  .photo-carousel {
+    width: min(100%, 60rem);
+    margin-inline: auto;
+    padding: clamp(1rem, 3vw, 1.5rem);
+  }
+
+  .carousel-header {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1.15rem;
+  }
+
+  .carousel-header h2 {
+    font-size: clamp(1.45rem, 3vw, 2rem);
+  }
+
+  .carousel-intro {
+    margin: 0.45rem 0 0;
+    color: var(--color-text-muted);
+  }
+
+  .carousel-position {
+    display: flex;
+    flex: 0 0 auto;
+    align-items: baseline;
+    gap: 0.3rem;
+    margin: 0;
+    color: var(--color-text-muted);
+    font-family: var(--font-heading);
+    font-weight: 800;
+  }
+
+  .carousel-position [data-carousel-current] {
+    color: var(--color-teal-800);
+    font-size: 1.65rem;
+  }
+
+  .carousel-viewport {
+    overflow: hidden;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-navy-950);
+    touch-action: pan-y;
+  }
+
+  .carousel-stage {
+    position: relative;
+  }
+
+  .carousel-slide {
+    margin: 0;
+  }
+
+  .carousel-slide img {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+  }
+
+  .carousel-arrow {
+    position: absolute;
+    top: 50%;
+    display: grid;
+    place-items: center;
+    width: 3rem;
+    height: 3rem;
+    padding: 0;
+    transform: translateY(-50%);
+    border: 1px solid rgba(255, 255, 255, 0.52);
+    border-radius: 50%;
+    background: rgba(5, 26, 53, 0.84);
+    color: white;
+    box-shadow: 0 0.45rem 1.25rem rgba(5, 26, 53, 0.24);
+    cursor: pointer;
+    transition:
+      background-color 0.18s ease,
+      transform 0.18s ease;
+  }
+
+  .carousel-arrow:hover {
+    transform: translateY(-50%) scale(1.05);
+    background: var(--color-teal-800);
+  }
+
+  .carousel-arrow svg {
+    width: 1.55rem;
+    fill: none;
+    stroke: currentColor;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 2.2;
+  }
+
+  .carousel-arrow-previous {
+    left: 0.75rem;
+  }
+
+  .carousel-arrow-next {
+    right: 0.75rem;
+  }
+
+  .carousel-caption {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    min-height: 4rem;
+    padding: 0.75rem 1rem;
+    background: var(--color-surface);
+  }
+
+  .carousel-caption svg {
+    flex: 0 0 auto;
+    width: 1.35rem;
+    fill: none;
+    stroke: var(--color-teal-800);
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 1.65;
+  }
+
+  .carousel-caption p {
+    margin: 0;
+    color: var(--color-text-muted);
+    line-height: 1.4;
+  }
+
+  .carousel-thumbnails {
+    display: flex;
+    gap: 0.65rem;
+    margin-top: 0.9rem;
+    padding: 0.15rem 0.15rem 0.5rem;
+    overflow-x: auto;
+    scrollbar-color: var(--color-teal-700) var(--color-teal-50);
+    scrollbar-width: thin;
+  }
+
+  .carousel-thumbnail {
+    position: relative;
+    flex: 0 0 5.5rem;
+    padding: 0;
+    overflow: hidden;
+    border: 3px solid transparent;
+    border-radius: 0.65rem;
+    background: var(--color-navy-950);
+    cursor: pointer;
+    opacity: 0.72;
+    transition:
+      border-color 0.18s ease,
+      opacity 0.18s ease,
+      transform 0.18s ease;
+  }
+
+  .carousel-thumbnail:hover {
+    opacity: 1;
+    transform: translateY(-2px);
+  }
+
+  .carousel-thumbnail[aria-current='true'] {
+    border-color: var(--color-teal-700);
+    opacity: 1;
+  }
+
+  .carousel-thumbnail img {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+  }
+
+  .carousel-thumbnail span {
+    position: absolute;
+    right: 0.25rem;
+    bottom: 0.25rem;
+    display: grid;
+    place-items: center;
+    min-width: 1.55rem;
+    height: 1.55rem;
+    padding-inline: 0.25rem;
+    border-radius: 999px;
+    background: rgba(5, 26, 53, 0.88);
+    color: white;
+    font-size: 0.7rem;
+    font-weight: 800;
+  }
+
+  @media (max-width: 35rem) {
+    .carousel-header {
+      align-items: start;
+    }
+
+    .carousel-intro {
+      font-size: 0.92rem;
+    }
+
+    .carousel-position {
+      padding-top: 1.4rem;
+    }
+
+    .carousel-arrow {
+      width: 2.75rem;
+      height: 2.75rem;
+    }
+
+    .carousel-arrow-previous {
+      left: 0.45rem;
+    }
+
+    .carousel-arrow-next {
+      right: 0.45rem;
+    }
+
+    .carousel-thumbnail {
+      flex-basis: 4.75rem;
+    }
+  }
+</style>
