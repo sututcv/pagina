@@ -8,8 +8,10 @@ import {
   getHonorJusticeMembers,
   getHomeContent,
   getNewsItems,
+  getPastEvents,
   getPendingItems,
   getSiteConfig,
+  getUpcomingEvents,
 } from './site';
 
 describe('site content', () => {
@@ -133,10 +135,17 @@ describe('site content', () => {
       place: 'CIBI de la UTCV',
       modality: 'Presencial',
       status: 'proximo',
+      summary:
+        'Asamblea sindical obligatoria. Se realizarán elecciones para la Secretaría de Comunicación, Difusión Cultura y Deportiva.',
     });
     expect(event?.description.join(' ')).toContain(
       'Secretaría de Comunicación, Difusión Cultural y Deportiva',
     );
+  });
+
+  it('separa las actividades realizadas de los próximos eventos', () => {
+    expect(getPastEvents()).toHaveLength(5);
+    expect(getUpcomingEvents()).toHaveLength(1);
   });
 
   it('centraliza los datos que aún requieren confirmación', () => {

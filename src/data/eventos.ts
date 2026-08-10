@@ -20,7 +20,7 @@ const upcomingEvents: EventItem[] = [
     slug: 'asamblea-cuatrimestre-mayo-agosto-2026',
     name: 'Asamblea cuatrimestral Mayo–Agosto 2026',
     summary:
-      'Asamblea sindical obligatoria con elección para la Secretaría de Comunicación, Difusión Cultural y Deportiva.',
+      'Asamblea sindical obligatoria. Se realizarán elecciones para la Secretaría de Comunicación, Difusión Cultura y Deportiva.',
     description: [
       'El SUTUTCV convoca a las personas agremiadas a la asamblea correspondiente al cuatrimestre Mayo–Agosto 2026, que se llevará a cabo el 28 de agosto de 2026 a las 13:00 horas en el CIBI de la UTCV.',
       'La asistencia es obligatoria. Para agilizar el pase de lista previo al inicio de la asamblea, se solicita presentar la credencial del sindicato.',

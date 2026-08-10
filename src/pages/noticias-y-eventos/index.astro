@@ -2,10 +2,14 @@
 import InfoCard from '../../components/cards/InfoCard.astro';
 import PageHero from '../../components/common/PageHero.astro';
 import Layout from '../../layouts/Layout.astro';
-import { getEvents, getNewsItems } from '../../lib/content/site';
+import { getNewsItems, getPastEvents, getUpcomingEvents } from '../../lib/content/site';
 
 const news = getNewsItems();
-const events = getEvents();
+const completedEvents = getPastEvents();
+const upcomingEvents = getUpcomingEvents();
+const completedLabel =
+  completedEvents.length === 1 ? 'actividad realizada' : 'actividades realizadas';
+const upcomingLabel = upcomingEvents.length === 1 ? 'próximo evento' : 'próximos eventos';
 ---
 
 <Layout
@@ -32,7 +36,7 @@ const events = getEvents();
         headingLevel={2}
       />
       <InfoCard
-        eyebrow={`${events.length} actividades`}
+        eyebrow={`${completedEvents.length} ${completedLabel} · ${upcomingEvents.length} ${upcomingLabel}`}
         title="Eventos"
         description="Agenda de próximos eventos y archivo de actividades institucionales realizadas."
         href="/eventos"
