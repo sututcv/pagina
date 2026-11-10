@@ -104,7 +104,7 @@ Antes de considerar el portal listo para publicación institucional se necesita 
 - Versiones públicas del Contrato UTCV y de las Condiciones Generales de Trabajo.
 - Periodo y funciones públicas del Comité Ejecutivo.
 - Historia institucional y principales logros.
-- Vigencia formal del convenio con Alianza.
+- Información autorizada de futuros convenios, incluidos beneficios, requisitos y vigencia.
 - Noticias autorizadas y próximos eventos confirmados.
 - Revisión individual de privacidad y selección editorial del resto de fotografías de `Eventos2026.zip`.
 

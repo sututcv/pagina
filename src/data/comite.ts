@@ -45,8 +45,8 @@ export const committeeMembers: CommitteeMember[] = [
     order: 6,
   },
   {
-    id: 'victor-garcia-gomez',
-    name: 'Lic. Víctor García Gómez',
+    id: 'juan-balam-pacheco-rodriguez',
+    name: 'Lic. Juan Balam Pacheco Rodríguez',
     role: 'Secretario de Comunicación, Difusión Cultural y Deportiva',
     area: 'comunicacion@sututcv.org.mx',
     order: 7,
