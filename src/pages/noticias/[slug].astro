@@ -88,7 +88,7 @@ const publicAttachments = item.attachments.filter(
           )
         }
       </div>
-      {item.photos && <PhotoCarousel photos={item.photos} />}
+      {item.photos && <PhotoCarousel photos={item.photos} title="Fotografías de la actividad" />}
     </div>
   </article>
 </Layout>
@@ -116,6 +116,11 @@ const publicAttachments = item.attachments.filter(
 
   .news-image {
     max-height: 32rem;
+  }
+
+  .news-image img {
+    max-height: 32rem;
+    object-fit: contain;
   }
 
   @media (min-width: 58rem) {

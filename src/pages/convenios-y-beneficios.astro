@@ -1,5 +1,6 @@
 ---
 import AgreementDirectory from '../components/agreements/AgreementDirectory.astro';
+import EmptyState from '../components/common/EmptyState.astro';
 import PageHero from '../components/common/PageHero.astro';
 import SectionHeading from '../components/common/SectionHeading.astro';
 import Layout from '../layouts/Layout.astro';
@@ -20,16 +21,25 @@ const categories = getAgreementCategories();
   <PageHero
     eyebrow="Beneficios institucionales"
     title="Convenios y beneficios"
-    description="Busca por empresa, servicio, categoría o estado de vigencia. La información se publica únicamente a partir de materiales proporcionados."
+    description="Conoce las novedades sobre convenios y beneficios para la comunidad SUTUTCV."
   />
 
   <section class="section">
     <div class="container stack-lg">
-      <SectionHeading
-        title="Directorio de convenios"
-        description="Consulta beneficios, requisitos, restricciones y datos de contacto."
-      />
-      <AgreementDirectory agreements={agreements} categories={categories} />
+      {agreements.length > 0 ? (
+        <>
+          <SectionHeading
+            title="Directorio de convenios"
+            description="Consulta beneficios, requisitos, restricciones y datos de contacto."
+          />
+          <AgreementDirectory agreements={agreements} categories={categories} />
+        </>
+      ) : (
+        <EmptyState
+          title="Próximos convenios"
+          description="En este espacio compartiremos los nuevos convenios y sus beneficios una vez que estén confirmados. Mantente al pendiente de las próximas publicaciones."
+        />
+      )}
     </div>
   </section>
 </Layout>

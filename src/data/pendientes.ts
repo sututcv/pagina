@@ -49,11 +49,11 @@ export const pendingItems: PendingItem[] = [
     priority: 'media',
   },
   {
-    id: 'vigencia-alianza',
+    id: 'futuros-convenios',
     section: 'Convenios y beneficios',
     description:
-      'Confirmar que la propuesta de Alianza está vigente y proporcionar su fecha de término o documento formal.',
-    priority: 'alta',
+      'Proporcionar la información autorizada de nuevos convenios, incluyendo beneficios, requisitos y vigencia, antes de publicarlos.',
+    priority: 'media',
   },
   {
     id: 'noticias',
@@ -72,7 +72,7 @@ export const pendingItems: PendingItem[] = [
     id: 'revision-galeria-completa',
     section: 'Galería',
     description:
-      'Revisar individualmente el material restante de Eventos2026.zip antes de realizar una nueva ampliación. La selección actual publica 56 imágenes revisadas y distribuidas en cinco álbumes.',
+      'Revisar individualmente el material restante de Eventos2026.zip antes de realizar una nueva ampliación. La selección de ese archivo conserva 56 imágenes en cinco álbumes; se añadieron 12 fotografías proporcionadas para la galería de la asamblea del 28 de agosto, para un total de 68 imágenes en seis álbumes.',
     priority: 'media',
   },
   {

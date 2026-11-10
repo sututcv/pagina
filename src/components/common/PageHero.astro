@@ -1,7 +1,7 @@
 ---
 interface Props {
   title: string;
-  description: string;
+  description?: string;
   eyebrow?: string;
   marker?: string;
   markerTitle?: string;
@@ -15,7 +15,7 @@ const { title, description, eyebrow, marker, markerTitle = 'Información pendien
     <div>
       {eyebrow && <p class="eyebrow">{eyebrow}</p>}
       <h1>{title}</h1>
-      <p>{description}</p>
+      {description?.split(/\n\s*\n/).map((paragraph) => <p>{paragraph}</p>)}
     </div>
     {marker && <aside class="pending-panel"><strong>{markerTitle}</strong>{marker}</aside>}
   </div>

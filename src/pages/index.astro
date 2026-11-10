@@ -73,11 +73,18 @@ const recentAlbums = getGalleryAlbums().slice(0, 3);
     <div class="container stack-lg">
       <SectionHeading
         eyebrow="Beneficios"
-        title="Convenios destacados"
-        description="Conoce los últimos convenios y beneficios que el sindicato ofrece a sus agremiados."
+        title="Convenios y beneficios"
+        description="Información sobre los convenios para nuestra comunidad sindical."
       />
       <div class="stack-lg">
-        {agreements.map((agreement) => <AgreementCard agreement={agreement} />)}
+        {agreements.length > 0 ? (
+          agreements.map((agreement) => <AgreementCard agreement={agreement} />)
+        ) : (
+          <EmptyState
+            title="Próximos convenios"
+            description="En este espacio compartiremos los nuevos convenios y sus beneficios una vez que estén confirmados. Mantente al pendiente de las próximas publicaciones."
+          />
+        )}
       </div>
     </div>
   </section>

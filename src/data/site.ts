@@ -26,7 +26,7 @@ export const siteConfig: SiteConfig = siteConfigSchema.parse({
   },
   contact: {},
   socials: [],
-  lastUpdated: '27 de julio de 2026',
+  lastUpdated: '9 de noviembre de 2026',
 });
 
 export const homeContent: HomeContent = homeContentSchema.parse({
@@ -66,12 +66,12 @@ export const homeContent: HomeContent = homeContentSchema.parse({
   },
   alerts: [
     {
-      id: 'convenio-alianza',
-      eyebrow: 'Salud',
-      title: 'Convenio de colaboración con Alianza',
+      id: 'proximos-convenios',
+      eyebrow: 'Beneficios',
+      title: 'Próximos convenios',
       description:
-        'Consulta los beneficios médicos proporcionados para las personas agremiadas y sus familiares directos.',
-      href: '/convenios-y-beneficios/alianza-centro-estudios-medicos',
+        'En este espacio compartiremos los nuevos convenios y sus beneficios una vez que estén confirmados.',
+      href: '/convenios-y-beneficios',
       tone: 'teal',
     },
     {

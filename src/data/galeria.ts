@@ -26,6 +26,42 @@ const captions = {
 
 export const galleryAlbums: GalleryAlbum[] = [
   {
+    slug: 'entrega-botanas-asamblea-agosto-2026',
+    title: 'Entrega de botanas en la asamblea del 28 de agosto',
+    description:
+      'Como parte de las actividades realizadas durante nuestra Asamblea, se llevó a cabo la entrega de botanas a las y los compañeros asistentes.\n\nAgradecemos su participación y disposición, reiterando nuestro compromiso de continuar generando espacios de convivencia y atención para todas y todos.',
+    date: '2026-08-28',
+    dateLabel: '28 de agosto de 2026',
+    place: 'CIBI de la UTCV',
+    cover: {
+      src: '/media/galeria/botanas-asamblea-agosto-2026/botanas-01.jpeg',
+      alt: 'Dos asistentes sostienen una bolsa de botanas durante la asamblea del 28 de agosto',
+      width: 1200,
+      height: 1600,
+    },
+    photos: [
+      'Dos asistentes sostienen una bolsa de botanas junto a la mesa de entrega',
+      'Dos compañeras muestran las botanas recibidas durante la asamblea',
+      'Dos compañeras posan con una bolsa de botanas junto al atril de la UTCV',
+      'Entrega de una bolsa de botanas a una compañera durante la asamblea',
+      'Dos asistentes muestran las bolsas de botanas entregadas durante la actividad',
+      'Tres asistentes posan con una bolsa de botanas frente a la pantalla del auditorio',
+      'Dos compañeras sostienen una bolsa de botanas frente a la mesa de entrega',
+      'Dos compañeras muestran una bolsa de botanas junto a la mesa del auditorio',
+      'Dos asistentes posan con una bolsa de botanas durante la convivencia',
+      'Dos compañeras sostienen las botanas recibidas en la asamblea',
+      'Dos compañeras posan con una bolsa de botanas al finalizar la entrega',
+      'Un asistente muestra la bolsa de botanas recibida durante la asamblea',
+    ].map((alt, index) => ({
+      id: `botanas-asamblea-agosto-2026-${String(index + 1).padStart(2, '0')}`,
+      src: `/media/galeria/botanas-asamblea-agosto-2026/botanas-${String(index + 1).padStart(2, '0')}.jpeg`,
+      alt,
+      caption: 'Entrega de botanas en la asamblea del 28 de agosto de 2026.',
+      width: 1200,
+      height: 1600,
+    })),
+  },
+  {
     slug: 'entrega-camisas-mayo-2026',
     title: 'Entrega de camisas por parte de Rectoría',
     description:
